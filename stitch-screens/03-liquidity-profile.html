@@ -1,0 +1,405 @@
+<!DOCTYPE html><html class="dark" lang="en"><head><meta charset="utf-8"/><!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LiqUIFI | Property Liquidity Profile</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary-fixed": "#26fedc",
+              "outline": "#859399",
+              "primary-fixed-dim": "#4cd6ff",
+              "primary": "#a4e6ff",
+              "primary-container": "#00d1ff",
+              "secondary-container": "#0148ab",
+              "surface-container-highest": "#30353b",
+              "background": "#0f1419",
+              "on-primary-container": "#00566a",
+              "surface": "#0f1419",
+              "secondary": "#b1c5ff",
+              "on-error": "#690005",
+              "surface-container-low": "#171c21",
+              "on-tertiary-fixed": "#00201a",
+              "surface-container-lowest": "#0a0f14",
+              "tertiary": "#0ef7d6",
+              "on-surface-variant": "#bbc9cf",
+              "tertiary-fixed-dim": "#00dfc1",
+              "inverse-primary": "#00677f",
+              "on-tertiary-fixed-variant": "#005144",
+              "on-primary": "#003543",
+              "on-background": "#dee3ea",
+              "on-secondary-fixed-variant": "#00419e",
+              "surface-tint": "#4cd6ff",
+              "secondary-fixed": "#dae2ff",
+              "error": "#ffb4ab",
+              "inverse-on-surface": "#2c3136",
+              "outline-variant": "#3c494e",
+              "surface-bright": "#353a3f",
+              "tertiary-container": "#00d8bb",
+              "on-primary-fixed": "#001f28",
+              "surface-container": "#1b2025",
+              "inverse-surface": "#dee3ea",
+              "surface-dim": "#0f1419",
+              "surface-container-high": "#252a30",
+              "on-tertiary": "#00382f",
+              "on-secondary": "#002c70",
+              "on-error-container": "#ffdad6",
+              "surface-variant": "#30353b",
+              "on-secondary-container": "#a6beff",
+              "secondary-fixed-dim": "#b1c5ff",
+              "error-container": "#93000a",
+              "on-primary-fixed-variant": "#004e60",
+              "on-secondary-fixed": "#001946",
+              "primary-fixed": "#b7eaff",
+              "on-surface": "#dee3ea",
+              "on-tertiary-container": "#00594c"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f1419; color: #dee3ea; }
+        .font-headline { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-panel { background: rgba(23, 28, 33, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .chart-glow { filter: drop-shadow(0 0 8px rgba(14, 247, 214, 0.3)); }
+    </style>
+</head>
+<body class="antialiased overflow-x-hidden bg-background text-on-background">
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-[#0f1419] font-manrope antialiased flex flex-col py-8 px-4 z-50">
+<div class="mb-12 px-4 flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary text-xl" style="font-variation-settings: 'FILL' 1;">fluid</span>
+</div>
+<div>
+<h1 class="text-2xl font-bold tracking-tight text-[#a4e6ff]">LiqUIFI</h1>
+<p class="text-[10px] uppercase tracking-[0.2em] text-slate-500">Liquid Intelligence</p>
+</div>
+</div>
+<nav class="space-y-2 flex-grow">
+<a class="flex items-center gap-4 px-4 py-3 rounded-full text-slate-400 hover:text-[#a4e6ff] hover:bg-[#252a30] transition-all duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-full text-[#0ef7d6] bg-[#171c21] font-bold border-r-2 border-[#0ef7d6]" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">domain</span>
+<span class="font-medium">Property Portfolio</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-full text-slate-400 hover:text-[#a4e6ff] hover:bg-[#252a30] transition-all duration-200" href="#">
+<span class="material-symbols-outlined">monitoring</span>
+<span class="font-medium">Risk Analytics</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-full text-slate-400 hover:text-[#a4e6ff] hover:bg-[#252a30] transition-all duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-medium">Settings</span>
+</a>
+</nav>
+<div class="mt-auto px-4 py-6 border-t border-outline-variant/10">
+<div class="flex items-center gap-3">
+<img alt="User Profile" class="w-10 h-10 rounded-full border border-primary/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBjO3ox-X4A7MKqWV6X2hd2REmP-U3DAXeA2limklIGsCL0Fx7190R0K6ZKyKC2tG4EswSuOOaEVRV-RYMNxz0EFt9UU3PL4zbIeSLDXWsamdfMxlHYaysIzf27DVEFJhpX-7o_bSPcQ6W0XTDPE9FgydCW7dNBlsl6tlsxmYDwTbRaiR6JGcR1IIPg13SI2dlQe2UwFoA02AQzT9hrOA3XOGTHXs1xa2ZZZLxxHMsxi4CpKhOxgc3X9u7tokkWpwqdhGskb7giOlR-"/>
+<div class="overflow-hidden">
+<p class="text-sm font-bold truncate">Alex Rivera</p>
+<p class="text-xs text-slate-500 truncate">Portfolio Manager</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] z-50 bg-[#0f1419]/80 backdrop-blur-xl border-b border-[#3c494e]/15 flex items-center justify-between px-8 h-20 shadow-2xl shadow-black/40">
+<div class="flex items-center gap-4 w-1/3">
+<div class="relative w-full group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg group-focus-within:text-tertiary transition-colors">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-full py-2.5 pl-12 pr-4 text-sm focus:ring-1 focus:ring-[#0ef7d6]/30 placeholder-slate-500 font-manrope" placeholder="Search assets, locations, or risk IDs..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<button class="w-10 h-10 flex items-center justify-center rounded-full text-slate-400 hover:bg-[#353a3f]/60 transition-all">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="h-8 w-px bg-outline-variant/20"></div>
+<div class="flex items-center gap-3 pl-2">
+<span class="text-xs font-semibold text-tertiary">SYSTEM STATUS: OPTIMAL</span>
+<div class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></div>
+</div>
+</div>
+</header>
+<main class="ml-64 pt-24 px-8 pb-12 min-h-screen">
+<!-- Header Section -->
+<div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div>
+<div class="flex items-center gap-2 text-xs text-slate-500 mb-4 uppercase tracking-widest font-semibold">
+<span>Portfolio</span>
+<span class="material-symbols-outlined text-[10px]">chevron_right</span>
+<span>Residential</span>
+<span class="material-symbols-outlined text-[10px]">chevron_right</span>
+<span class="text-primary-fixed-dim">The Obsidian Penthouse</span>
+</div>
+<div class="flex items-center gap-4 mb-2">
+<h2 class="text-4xl font-headline font-extrabold text-on-surface">The Obsidian Penthouse</h2>
+<div class="flex gap-2">
+<span class="px-3 py-1 bg-tertiary/10 text-tertiary text-[10px] font-bold rounded-full border border-tertiary/20">LIQUID</span>
+<span class="px-3 py-1 bg-primary/10 text-primary text-[10px] font-bold rounded-full border border-primary/20">PREMIUM</span>
+</div>
+</div>
+<p class="text-slate-400 flex items-center gap-2">
+<span class="material-symbols-outlined text-lg text-primary">location_on</span>
+                422 Skyline Drive, District 9, Neo-Seoul
+            </p>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 px-6 py-3 rounded-xl border border-outline/20 text-sm font-bold text-on-surface hover:bg-surface-container-high transition-all">
+<span class="material-symbols-outlined text-lg">download</span>
+                Generate PDF
+            </button>
+<button class="flex items-center gap-2 px-8 py-3 rounded-xl bg-gradient-to-br from-primary to-primary-container text-on-primary text-sm font-extrabold shadow-lg shadow-primary-container/20 hover:scale-[1.02] transition-transform">
+<span class="material-symbols-outlined text-lg">flash_on</span>
+                Initiate Liquidation
+            </button>
+</div>
+</div>
+<!-- Main Grid Content -->
+<div class="grid grid-cols-12 gap-6">
+<!-- Left Column -->
+<div class="col-span-12 lg:col-span-4 space-y-6">
+<!-- Liquidity Score -->
+<section class="bg-surface-container-low rounded-2xl p-8 flex flex-col items-center border border-white/5 relative group overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<h3 class="text-sm font-headline font-bold text-slate-400 uppercase tracking-widest mb-10 w-full text-left">Liquidity Score</h3>
+<div class="relative w-56 h-56 flex items-center justify-center">
+<svg class="w-full h-full transform -rotate-90">
+<circle class="text-surface-container-highest" cx="112" cy="112" fill="transparent" r="100" stroke="currentColor" stroke-width="12"></circle>
+<circle cx="112" cy="112" fill="transparent" r="100" stroke="url(#scoreGrad)" stroke-dasharray="628" stroke-dashoffset="100" stroke-linecap="round" stroke-width="14"></circle>
+<defs>
+<lineargradient id="scoreGrad" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" stop-color="#0ef7d6"></stop>
+<stop offset="100%" stop-color="#a4e6ff"></stop>
+</lineargradient>
+</defs>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-7xl font-headline font-extrabold text-white">84</span>
+<span class="text-xs font-black text-tertiary tracking-[0.2em]">OPTIMAL</span>
+</div>
+</div>
+<div class="mt-10 p-5 rounded-xl bg-surface-container-high/40 border border-white/5 w-full">
+<p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-primary">psychology</span>
+                        AI Rationale
+                    </p>
+<p class="text-sm leading-relaxed text-on-surface-variant">
+                        High absorption rate in District 9 (+14% MoM) and 94% build-quality rating drive premium liquidity. Recent zoning stability confirms safe exit window within 15 days.
+                    </p>
+</div>
+</section>
+<!-- Time-to-Sell Metrics -->
+<section class="bg-surface-container-low rounded-2xl p-8 border border-white/5">
+<h3 class="text-sm font-headline font-bold text-slate-400 uppercase tracking-widest mb-8">Time-to-Sell Prediction</h3>
+<div class="flex items-end justify-between mb-8">
+<div>
+<div class="flex items-baseline gap-2">
+<span class="text-6xl font-headline font-extrabold text-primary-fixed-dim">14</span>
+<span class="text-xl font-bold text-slate-500">Days</span>
+</div>
+<p class="text-xs text-tertiary font-bold mt-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">trending_down</span>
+                            4 Days faster than sector avg
+                        </p>
+</div>
+<div class="text-right">
+<div class="text-[10px] text-slate-500 font-bold uppercase mb-1">Confidence</div>
+<div class="text-2xl font-headline font-bold text-on-surface">94.2%</div>
+</div>
+</div>
+<div class="space-y-4">
+<div class="w-full bg-surface-container-highest h-2.5 rounded-full overflow-hidden flex">
+<div class="h-full bg-primary" style="width: 85%;"></div>
+</div>
+<div class="flex justify-between text-[10px] font-bold text-slate-500 uppercase">
+<span>Instant (0d)</span>
+<span>Avg (28d)</span>
+</div>
+</div>
+</section>
+</div>
+<!-- Middle Column -->
+<div class="col-span-12 lg:col-span-5 space-y-6">
+<!-- Pricing Trends Chart -->
+<section class="bg-surface-container-low rounded-2xl p-8 h-[440px] flex flex-col border border-white/5">
+<div class="flex justify-between items-center mb-8">
+<div>
+<h3 class="text-sm font-headline font-bold text-slate-400 uppercase tracking-widest">Pricing Intelligence</h3>
+<p class="text-xs text-slate-500 mt-1">Historical performance + AI projection</p>
+</div>
+<div class="flex bg-surface-container-high rounded-lg p-1">
+<button class="px-3 py-1 text-[10px] font-bold text-primary bg-surface-container-highest rounded">12M</button>
+<button class="px-3 py-1 text-[10px] font-bold text-slate-500">5Y</button>
+</div>
+</div>
+<div class="flex-grow relative mt-4">
+<!-- Simple SVG Chart -->
+<svg class="w-full h-full chart-glow" preserveaspectratio="none" viewbox="0 0 500 200">
+<defs>
+<lineargradient id="lineGrad" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#0ef7d6" stop-opacity="0.3"></stop>
+<stop offset="100%" stop-color="#0ef7d6" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<!-- Area -->
+<path d="M0,160 Q100,150 150,110 T300,90 T450,40 L500,30 V200 H0 Z" fill="url(#lineGrad)"></path>
+<!-- Projected Path (Dashed) -->
+<path d="M450,40 L500,30" fill="none" stroke="#a4e6ff" stroke-dasharray="5,5" stroke-width="2"></path>
+<!-- Real Path -->
+<path d="M0,160 Q100,150 150,110 T300,90 T450,40" fill="none" stroke="#0ef7d6" stroke-width="3"></path>
+<!-- Grid Lines -->
+<line stroke="#3c494e" stroke-dasharray="2,4" stroke-opacity="0.2" x1="0" x2="500" y1="50" y2="50"></line>
+<line stroke="#3c494e" stroke-dasharray="2,4" stroke-opacity="0.2" x1="0" x2="500" y1="100" y2="100"></line>
+<line stroke="#3c494e" stroke-dasharray="2,4" stroke-opacity="0.2" x1="0" x2="500" y1="150" y2="150"></line>
+</svg>
+<!-- Data Tooltips -->
+<div class="absolute top-[30px] right-0 flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+<span class="text-xs font-bold text-primary">$2.45M (PROJ)</span>
+</div>
+<div class="absolute bottom-0 left-0 w-full flex justify-between text-[10px] font-bold text-slate-600 uppercase tracking-tighter">
+<span>OCT 23</span>
+<span>JAN 24</span>
+<span>APR 24</span>
+<span>JUL 24</span>
+<span>OCT 24</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 mt-8 pt-6 border-t border-outline-variant/10">
+<div>
+<p class="text-[10px] font-bold text-slate-500 uppercase mb-1">Current Valuation</p>
+<p class="text-xl font-headline font-bold text-white">$2,410,000</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] font-bold text-slate-500 uppercase mb-1">Est. Exit Price</p>
+<p class="text-xl font-headline font-bold text-tertiary">$2,385,000</p>
+</div>
+</div>
+</section>
+<!-- Recent Comparables -->
+<section class="bg-surface-container-low rounded-2xl p-8 border border-white/5">
+<div class="flex justify-between items-center mb-6">
+<h3 class="text-sm font-headline font-bold text-slate-400 uppercase tracking-widest">Recent Comparables</h3>
+<button class="text-[10px] font-bold text-primary hover:underline uppercase tracking-widest">View Map</button>
+</div>
+<div class="space-y-4">
+<!-- Comp 1 -->
+<div class="flex items-center gap-4 p-4 rounded-xl bg-surface-container-high/30 hover:bg-surface-container-high transition-all border border-transparent hover:border-white/5">
+<img alt="Comparable 1" class="w-16 h-16 rounded-lg object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAocXz6wfmcUN9CjoRxcMbHkVkcKAHi1uFai4z4e6EneqBgNKCGHb8WgZI1jN9vZbXB6LnK6ZajVYDaRxZ5U_jCqpz7WcY1_QPP_8xHaLB7qa030dhw03vPTW1NSulWNW7-dO1fYCOAZa914pvoLI07r5Jk7_aQcmCsDYy-0fYmXhgOEVl3zYZqiBioD10QGpzgu95qTAVTEs1Rpsx9mFXIis31aw9HM0BpxGMlU9V68MZRvWhljayukCMZu6r-1CAIRpXsXSPNT7bF"/>
+<div class="flex-grow">
+<h4 class="text-sm font-bold text-on-surface">Azure Towers #1402</h4>
+<p class="text-[10px] text-slate-500 font-medium">0.4 mi • Sold 12d ago</p>
+</div>
+<div class="text-right">
+<p class="text-sm font-bold text-white">$2.15M</p>
+<p class="text-[10px] text-tertiary font-bold">+4.2%</p>
+</div>
+</div>
+<!-- Comp 2 -->
+<div class="flex items-center gap-4 p-4 rounded-xl bg-surface-container-high/30 hover:bg-surface-container-high transition-all border border-transparent hover:border-white/5">
+<img alt="Comparable 2" class="w-16 h-16 rounded-lg object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzh0naeCorkwIc0tAnEgFfkpGCZwxopHxTQykWG5wHuzMAC4eKX8uCzLgdYx_UyGDJ6sXLS1ozsMf1tGBhVQw-_UoXqkPFdJtuCSDShGYt8Yjh7lXlAZdpzRkM8uFMt54IAqfdeEQ1fqldBjUchsbAUKPqUaikTNNxx38azNXqsuSKpMx-hDPYEjYMc9EzjUAbzaTV1kTUBVgbYn4DonyBhqdFWdX-5ZU6yvauc-nN-HROSjiHErLMPud1Nj2JkY2--XX_ujhqwPgN"/>
+<div class="flex-grow">
+<h4 class="text-sm font-bold text-on-surface">The Zenith Unit 4</h4>
+<p class="text-[10px] text-slate-500 font-medium">0.8 mi • Sold 28d ago</p>
+</div>
+<div class="text-right">
+<p class="text-sm font-bold text-white">$1.98M</p>
+<p class="text-[10px] text-slate-500 font-bold">-1.2%</p>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column -->
+<div class="col-span-12 lg:col-span-3 space-y-6">
+<!-- Risk Factors -->
+<section class="bg-surface-container-low rounded-2xl p-8 border border-white/5 border-l-4 border-error/50">
+<h3 class="text-sm font-headline font-bold text-slate-400 uppercase tracking-widest mb-8">Risk Factors</h3>
+<div class="space-y-6">
+<div>
+<div class="flex justify-between items-center mb-2">
+<span class="text-xs font-bold text-on-surface">Market Saturation</span>
+<span class="text-[10px] font-black text-secondary">MODERATE</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
+<div class="h-full bg-secondary rounded-full" style="width: 55%;"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between items-center mb-2">
+<span class="text-xs font-bold text-on-surface">Location Volatility</span>
+<span class="text-[10px] font-black text-tertiary">STABLE</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
+<div class="h-full bg-tertiary rounded-full" style="width: 15%;"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between items-center mb-2">
+<span class="text-xs font-bold text-on-surface">Asset Degradation</span>
+<span class="text-[10px] font-black text-primary">LOW</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 25%;"></div>
+</div>
+</div>
+</div>
+<div class="mt-8 p-4 rounded-xl bg-error/5 border border-error/10 flex gap-3">
+<span class="material-symbols-outlined text-error text-xl" style="font-variation-settings: 'FILL' 1;">warning</span>
+<p class="text-[11px] leading-relaxed text-error font-medium">
+                        Upcoming 2025 energy tax proposal may impact luxury holding costs by 1.2% p.a.
+                    </p>
+</div>
+</section>
+<!-- AI Market Sentiment -->
+<section class="bg-surface-container-low rounded-2xl p-8 border border-white/5 relative overflow-hidden group">
+<div class="absolute -top-12 -right-12 w-32 h-32 bg-primary/10 rounded-full blur-3xl group-hover:bg-primary/20 transition-all"></div>
+<div class="flex items-center gap-3 mb-8">
+<div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-lg" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<h3 class="text-sm font-headline font-bold text-slate-400 uppercase tracking-widest">Market Sentiment</h3>
+</div>
+<div class="space-y-6">
+<div class="p-4 rounded-xl bg-[#171c21] border border-white/5 italic">
+<p class="text-sm leading-relaxed text-on-surface">
+                            "Current social data shows a <span class="text-tertiary font-bold">12.4% uptick</span> in luxury demand within District 9. Investor appetite for high-floor assets remains <span class="text-primary font-bold">Bullish</span> despite macroeconomic headwinds."
+                        </p>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="text-center p-3 rounded-xl bg-surface-container-high/40">
+<p class="text-[10px] text-slate-500 font-bold mb-1 uppercase">Buyer Demand</p>
+<span class="text-xs font-black text-tertiary">HIGH</span>
+</div>
+<div class="text-center p-3 rounded-xl bg-surface-container-high/40">
+<p class="text-[10px] text-slate-500 font-bold mb-1 uppercase">Sentiment</p>
+<span class="text-xs font-black text-primary">78/100</span>
+</div>
+</div>
+<button class="w-full py-3 rounded-xl border border-primary/20 text-[10px] font-bold text-primary hover:bg-primary/5 transition-colors uppercase tracking-[0.2em]">
+                        View Detailed AI Feed
+                    </button>
+</div>
+</section>
+</div>
+</div>
+</main>
+</body></html></body></html>

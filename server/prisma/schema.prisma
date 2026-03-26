@@ -1,0 +1,135 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ANALYST
+  AUDITOR
+  ADMIN
+}
+
+enum PropertyType {
+  COMMERCIAL
+  RESIDENTIAL
+  INDUSTRIAL
+  MIXED_USE
+}
+
+enum PropertyStatus {
+  ACTIVE
+  UNDER_REVIEW
+  RISK_DETECTED
+}
+
+enum RiskStatus {
+  LOW_RISK
+  MEDIUM_RISK
+  HIGH_RISK
+}
+
+enum AlertType {
+  LIQUIDITY_DROP
+  VACANCY_RISK
+  SEVERE_OUTFLOW
+  THRESHOLD_BREACH
+}
+
+model User {
+  id            String         @id @default(cuid())
+  email         String         @unique
+  name          String
+  role          UserRole       @default(ANALYST)
+  password      String
+  createdAt     DateTime       @default(now())
+  properties    Property[]
+  scoreRequests ScoreRequest[]
+
+  @@index([email])
+}
+
+model Property {
+  id              String         @id @default(cuid())
+  name            String
+  address         String
+  city            String
+  state           String
+  country         String
+  postalCode      String?
+  lat             Float
+  lng             Float
+  propertyType    PropertyType
+  status          PropertyStatus @default(ACTIVE)
+  marketValue     Float
+  liquidityScore  Float?
+  capRate         Float?
+  occupancyRate   Float?
+  timeToLiquidity Int?
+  yoyChange       Float?
+  imageUrl        String?
+  smeName         String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  userId          String
+  user            User           @relation(fields: [userId], references: [id])
+  assessments     AiAssessment[] @relation("PropertyAssessments")
+  scoreRequests   ScoreRequest[] @relation("PropertyScoreRequests")
+  riskAlerts      RiskAlert[]    @relation("PropertyRiskAlerts")
+
+  @@index([userId])
+  @@index([city])
+  @@index([status])
+  @@index([liquidityScore])
+}
+
+model ScoreRequest {
+  id         String     @id @default(cuid())
+  score      Float
+  riskStatus RiskStatus
+  createdAt  DateTime   @default(now())
+  propertyId String
+  property   Property   @relation("PropertyScoreRequests", fields: [propertyId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([propertyId])
+  @@index([createdAt])
+}
+
+model AiAssessment {
+  id         String   @id @default(cuid())
+  title      String
+  detail     String
+  sentiment  String
+  icon       String
+  createdAt  DateTime @default(now())
+  propertyId String
+  property   Property @relation("PropertyAssessments", fields: [propertyId], references: [id], onDelete: Cascade)
+}
+
+model RiskAlert {
+  id         String    @id @default(cuid())
+  type       AlertType
+  delta      Float
+  resolved   Boolean   @default(false)
+  createdAt  DateTime  @default(now())
+  propertyId String
+  property   Property  @relation("PropertyRiskAlerts", fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@index([resolved])
+  @@index([propertyId])
+}
+
+model GeocodeCache {
+  id        String   @id @default(cuid())
+  query     String   @unique
+  lat       Float
+  lng       Float
+  createdAt DateTime @default(now())
+
+  @@index([query])
+}

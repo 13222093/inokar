@@ -1,0 +1,366 @@
+<!DOCTYPE html><html class="dark" lang="en"><head><meta charset="utf-8"/><!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LiqUIFI | Risk Analytics &amp; Reporting</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary-fixed": "#26fedc",
+              "outline": "#859399",
+              "primary-fixed-dim": "#4cd6ff",
+              "primary": "#a4e6ff",
+              "primary-container": "#00d1ff",
+              "secondary-container": "#0148ab",
+              "surface-container-highest": "#30353b",
+              "background": "#0f1419",
+              "on-primary-container": "#00566a",
+              "surface": "#0f1419",
+              "secondary": "#b1c5ff",
+              "on-error": "#690005",
+              "surface-container-low": "#171c21",
+              "on-tertiary-fixed": "#00201a",
+              "surface-container-lowest": "#0a0f14",
+              "tertiary": "#0ef7d6",
+              "on-surface-variant": "#bbc9cf",
+              "tertiary-fixed-dim": "#00dfc1",
+              "inverse-primary": "#00677f",
+              "on-tertiary-fixed-variant": "#005144",
+              "on-primary": "#003543",
+              "on-background": "#dee3ea",
+              "on-secondary-fixed-variant": "#00419e",
+              "surface-tint": "#4cd6ff",
+              "secondary-fixed": "#dae2ff",
+              "error": "#ffb4ab",
+              "inverse-on-surface": "#2c3136",
+              "outline-variant": "#3c494e",
+              "surface-bright": "#353a3f",
+              "tertiary-container": "#00d8bb",
+              "on-primary-fixed": "#001f28",
+              "surface-container": "#1b2025",
+              "inverse-surface": "#dee3ea",
+              "surface-dim": "#0f1419",
+              "surface-container-high": "#252a30",
+              "on-tertiary": "#00382f",
+              "on-secondary": "#002c70",
+              "on-error-container": "#ffdad6",
+              "surface-variant": "#30353b",
+              "on-secondary-container": "#a6beff",
+              "secondary-fixed-dim": "#b1c5ff",
+              "error-container": "#93000a",
+              "on-primary-fixed-variant": "#004e60",
+              "on-secondary-fixed": "#001946",
+              "primary-fixed": "#b7eaff",
+              "on-surface": "#dee3ea",
+              "on-tertiary-container": "#00594c"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"],
+              "manrope": ["Manrope"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0f1419; }
+        ::-webkit-scrollbar-thumb { background: #30353b; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-tertiary/30 selection:text-tertiary">
+<!-- SideNavBar (from COMPONENTS_3) -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-[#0f1419] dark:bg-[#0f1419] font-manrope antialiased flex flex-col py-8 px-4 z-50">
+<div class="mb-12 px-2">
+<h1 class="text-2xl font-bold tracking-tight text-[#a4e6ff]">LiqUIFI</h1>
+<p class="text-xs text-slate-500 font-medium tracking-widest uppercase mt-1">Liquid Intelligence</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-[#a4e6ff] transition-all duration-200 hover:bg-[#252a30] group" href="#">
+<span class="material-symbols-outlined transition-transform duration-150 group-active:scale-95">dashboard</span>
+<span class="font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-[#a4e6ff] transition-all duration-200 hover:bg-[#252a30] group" href="#">
+<span class="material-symbols-outlined transition-transform duration-150 group-active:scale-95">domain</span>
+<span class="font-medium">Property Portfolio</span>
+</a>
+<!-- Active State: Risk Analytics -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-[#0ef7d6] bg-[#171c21] font-bold border-r-2 border-[#0ef7d6] group" href="#">
+<span class="material-symbols-outlined transition-transform duration-150 group-active:scale-95">monitoring</span>
+<span class="font-medium">Risk Analytics</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-[#a4e6ff] transition-all duration-200 hover:bg-[#252a30] group" href="#">
+<span class="material-symbols-outlined transition-transform duration-150 group-active:scale-95">settings</span>
+<span class="font-medium">Settings</span>
+</a>
+</nav>
+<div class="mt-auto p-4 bg-surface-container-low rounded-xl border border-outline-variant/10">
+<div class="flex items-center gap-3 mb-3">
+<div class="w-8 h-8 rounded-full bg-gradient-to-tr from-primary to-tertiary flex items-center justify-center text-on-primary font-bold text-xs">AI</div>
+<span class="text-sm font-semibold text-primary">Intelligence Active</span>
+</div>
+<p class="text-[10px] text-slate-500 leading-relaxed">System monitoring 1,240 assets for liquidity shifts in real-time.</p>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="ml-64 min-h-screen">
+<!-- TopNavBar (from COMPONENTS_3) -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] z-40 bg-[#0f1419]/80 backdrop-blur-xl border-b border-[#3c494e]/15 shadow-2xl shadow-black/40 flex items-center justify-between px-8 h-20">
+<div class="flex items-center bg-surface-container-low px-4 py-2 rounded-full border border-outline-variant/10 w-96 focus-within:ring-1 focus-within:ring-[#0ef7d6]/30 transition-all">
+<span class="material-symbols-outlined text-outline text-xl">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full placeholder:text-outline/50 ml-2" placeholder="Search analytics or assets..." type="text"/>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex gap-4">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#353a3f]/60 transition-all text-slate-400">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#353a3f]/60 transition-all text-slate-400">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+<div class="h-8 w-[1px] bg-outline-variant/20"></div>
+<div class="flex items-center gap-3">
+<div class="text-right hidden sm:block">
+<p class="text-xs font-bold text-on-surface">Marcus Chen</p>
+<p class="text-[10px] text-tertiary font-manrope">Senior Risk Officer</p>
+</div>
+<img alt="User Profile" class="w-10 h-10 rounded-full object-cover border-2 border-primary/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2VEZU1bTXpqRu-ENLUnlcERDLBb7IcVlRB25x4xgan8lZYm7MfkW3uAEZ4-rfKLVaIgnoU8kUbwP-Zgd4KizYdeMoMgiwquwM_IRcFlxPbxT0ZHjWz7QIGk2wlP3Jh_SsLvw1_qtHh41PFFFM7lrN6WPME1leILnTgwLzqFXde0V4OJ0XfyHM05Euh_bb72V7rXnUjtXgWDvF35BSkMaSObQyrrZPu8dev6oPeav1_DFQQEP_lqQYlx4Eom3tmJTvWnK9MEnAMMiU"/>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="pt-28 pb-12 px-8 max-w-[1600px] mx-auto space-y-10">
+<!-- Header -->
+<section class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div>
+<span class="text-tertiary font-bold tracking-widest text-[10px] uppercase mb-2 block font-manrope">Real-Time Risk Monitoring</span>
+<h2 class="text-4xl font-extrabold font-headline tracking-tight text-on-surface">Risk Portfolio <span class="text-primary">Analytics</span></h2>
+<p class="text-outline mt-2 max-w-2xl">Visualizing multi-sector liquidity exposure and geographic risk concentration using machine learning volatility projections.</p>
+</div>
+<div class="flex items-center gap-2 bg-surface-container-low p-1.5 rounded-xl border border-outline-variant/10">
+<button class="px-5 py-2 rounded-lg bg-surface-container-high text-xs font-bold text-primary shadow-lg font-manrope">Global</button>
+<button class="px-5 py-2 rounded-lg hover:bg-surface-container-high text-xs font-bold text-outline transition-all font-manrope">North America</button>
+<button class="px-5 py-2 rounded-lg hover:bg-surface-container-high text-xs font-bold text-outline transition-all font-manrope">EMEA</button>
+</div>
+</section>
+<!-- High-Level Metrics -->
+<section class="grid grid-cols-1 md:grid-cols-4 gap-6">
+<div class="bg-surface-container-low rounded-xl p-6 border border-outline-variant/10 flex flex-col justify-between h-32">
+<div class="flex justify-between items-start">
+<p class="text-[10px] font-bold text-outline uppercase tracking-wider font-manrope">Portfolio Health</p>
+<span class="text-[10px] text-tertiary bg-tertiary/10 px-2 py-0.5 rounded font-bold">+2.1%</span>
+</div>
+<h4 class="text-3xl font-bold text-tertiary font-headline">84.2</h4>
+<div class="h-1 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-tertiary" style="width: 84.2%"></div>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-xl p-6 border border-outline-variant/10 flex flex-col justify-between h-32">
+<div class="flex justify-between items-start">
+<p class="text-[10px] font-bold text-outline uppercase tracking-wider font-manrope">Market Exposure</p>
+<span class="text-[10px] text-outline bg-outline/10 px-2 py-0.5 rounded font-bold font-manrope">STABLE</span>
+</div>
+<h4 class="text-3xl font-bold text-primary font-headline">$4.2B</h4>
+<div class="h-1 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary" style="width: 65%"></div>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-xl p-6 border border-outline-variant/10 flex flex-col justify-between h-32">
+<div class="flex justify-between items-start">
+<p class="text-[10px] font-bold text-outline uppercase tracking-wider font-manrope">Liquid Reserve</p>
+<span class="text-[10px] text-error bg-error/10 px-2 py-0.5 rounded font-bold">-0.8%</span>
+</div>
+<h4 class="text-3xl font-bold text-on-surface font-headline">18.5%</h4>
+<div class="h-1 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-error" style="width: 18.5%"></div>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-xl p-6 border border-outline-variant/10 flex flex-col justify-between h-32">
+<div class="flex justify-between items-start">
+<p class="text-[10px] font-bold text-outline uppercase tracking-wider font-manrope">System Uptime</p>
+<span class="text-[10px] text-tertiary bg-tertiary/10 px-2 py-0.5 rounded font-bold font-manrope">NOMINAL</span>
+</div>
+<h4 class="text-3xl font-bold text-tertiary font-headline">99.9%</h4>
+<div class="h-1 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-tertiary/60" style="width: 99.9%"></div>
+</div>
+</div>
+</section>
+<!-- Risk Visualizations & Detailed Tables -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- Heatmap (Risk Distribution) -->
+<div class="lg:col-span-8 bg-surface-container-low rounded-xl overflow-hidden border border-outline-variant/10 flex flex-col">
+<div class="p-6 border-b border-outline-variant/10 flex justify-between items-center bg-surface-container-low/50">
+<div>
+<h3 class="font-headline font-bold text-lg">Geographic Risk Distribution</h3>
+<p class="text-xs text-outline font-manrope">Global hotspot intensity based on sector volatility</p>
+</div>
+<div class="flex gap-4">
+<div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-error"></span><span class="text-[10px] text-outline font-bold">HIGH RISK</span></div>
+<div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-tertiary"></span><span class="text-[10px] text-outline font-bold">STABLE</span></div>
+</div>
+</div>
+<div class="relative h-[480px] bg-background flex items-center justify-center overflow-hidden">
+<img alt="Data World Map" class="w-full h-full object-cover opacity-30 mix-blend-screen" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvjgK63io3JArGi6kBJ1NOkj1Blu5dOxk8yQ0UZ37fCe6Rz6yrNBtNk3Ij2qTjW6P0u6cqamwuC5klu7-_sffYmlpv2pSSD-IkF-ohhVs7uUIF9nHnW8VOrC7hurn1g6MSfpHR47hNzG4rlMvqhLABqqPhaKSVU-mD5S2uV2bMS6kFLOYbz_Z5NdkvWDVS4pr8hvozKYI_e6fjfxIDidkySiyR_r53__-3tw3-pZHVxP-QyJ8GFi89XgMWQqo23_kPreLCpI6jxkAi"/>
+<!-- Hotspots -->
+<div class="absolute top-1/3 left-1/4 group cursor-pointer">
+<div class="w-6 h-6 bg-error rounded-full animate-ping absolute opacity-40"></div>
+<div class="w-4 h-4 bg-error rounded-full relative shadow-[0_0_20px_rgba(255,180,171,0.8)] border-2 border-background"></div>
+<div class="hidden group-hover:flex absolute -top-14 left-1/2 -translate-x-1/2 bg-surface-bright p-2 rounded-lg border border-outline-variant/30 flex-col min-w-[120px] shadow-2xl z-20">
+<span class="text-[10px] font-bold text-on-surface">San Francisco</span>
+<span class="text-[11px] text-error font-bold">Risk: High (8.4)</span>
+</div>
+</div>
+<div class="absolute top-1/2 left-[58%] group cursor-pointer">
+<div class="w-4 h-4 bg-tertiary rounded-full relative shadow-[0_0_20px_rgba(14,247,214,0.8)] border-2 border-background"></div>
+<div class="hidden group-hover:flex absolute -top-14 left-1/2 -translate-x-1/2 bg-surface-bright p-2 rounded-lg border border-outline-variant/30 flex-col min-w-[120px] shadow-2xl z-20">
+<span class="text-[10px] font-bold text-on-surface">London Hub</span>
+<span class="text-[11px] text-tertiary font-bold">Risk: Low (2.1)</span>
+</div>
+</div>
+<div class="absolute bottom-1/3 left-[70%] group cursor-pointer">
+<div class="w-4 h-4 bg-primary rounded-full relative shadow-[0_0_20px_rgba(76,214,255,0.8)] border-2 border-background"></div>
+<div class="hidden group-hover:flex absolute -top-14 left-1/2 -translate-x-1/2 bg-surface-bright p-2 rounded-lg border border-outline-variant/30 flex-col min-w-[120px] shadow-2xl z-20">
+<span class="text-[10px] font-bold text-on-surface">Singapore Terminal</span>
+<span class="text-[11px] text-primary font-bold">Risk: Neutral (4.6)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- High Risk Assets Table -->
+<div class="lg:col-span-4 bg-surface-container-low rounded-xl border border-outline-variant/10 flex flex-col">
+<div class="p-6 border-b border-outline-variant/10 flex justify-between items-center bg-surface-container-low/50">
+<h3 class="font-headline font-bold text-lg">High Risk Assets</h3>
+<span class="px-2 py-1 bg-error/15 text-error text-[10px] font-bold rounded uppercase tracking-wider font-manrope">Review Priority</span>
+</div>
+<div class="flex-1 overflow-y-auto">
+<table class="w-full text-left border-collapse">
+<thead class="sticky top-0 bg-surface-container-low text-[10px] text-outline font-bold uppercase tracking-widest border-b border-outline-variant/10">
+<tr>
+<th class="px-6 py-4 font-manrope">Asset &amp; Location</th>
+<th class="px-6 py-4 text-right font-manrope">Delta</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/5">
+<tr class="hover:bg-surface-container-high/40 transition-colors group">
+<td class="px-6 py-5">
+<p class="text-sm font-bold text-on-surface group-hover:text-primary transition-colors">Apex Plaza Retail</p>
+<p class="text-[10px] text-outline font-manrope">San Francisco, CA</p>
+</td>
+<td class="px-6 py-5 text-right">
+<div class="flex flex-col items-end">
+<span class="text-error font-bold flex items-center gap-1 text-sm font-manrope">
+<span class="material-symbols-outlined text-sm">trending_down</span> -14.2%
+                                            </span>
+<span class="text-[9px] text-outline font-manrope uppercase">Liquidity Drop</span>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-high/40 transition-colors group">
+<td class="px-6 py-5">
+<p class="text-sm font-bold text-on-surface group-hover:text-primary transition-colors">Centennial Office Tower</p>
+<p class="text-[10px] text-outline font-manrope">Austin, TX</p>
+</td>
+<td class="px-6 py-5 text-right">
+<div class="flex flex-col items-end">
+<span class="text-error font-bold flex items-center gap-1 text-sm font-manrope">
+<span class="material-symbols-outlined text-sm">trending_down</span> -9.8%
+                                            </span>
+<span class="text-[9px] text-outline font-manrope uppercase">Vacancy Risk</span>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-high/40 transition-colors group">
+<td class="px-6 py-5">
+<p class="text-sm font-bold text-on-surface group-hover:text-primary transition-colors">The Grand Mall (Ph II)</p>
+<p class="text-[10px] text-outline font-manrope">Phoenix, AZ</p>
+</td>
+<td class="px-6 py-5 text-right">
+<div class="flex flex-col items-end">
+<span class="text-error font-bold flex items-center gap-1 text-sm font-manrope">
+<span class="material-symbols-outlined text-sm">trending_down</span> -18.5%
+                                            </span>
+<span class="text-[9px] text-outline font-manrope uppercase">Severe Outflow</span>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-high/40 transition-colors group">
+<td class="px-6 py-5">
+<p class="text-sm font-bold text-on-surface group-hover:text-primary transition-colors">Harbor Light Logistics</p>
+<p class="text-[10px] text-outline font-manrope">Seattle, WA</p>
+</td>
+<td class="px-6 py-5 text-right">
+<div class="flex flex-col items-end">
+<span class="text-on-surface font-bold flex items-center gap-1 text-sm font-manrope">
+<span class="material-symbols-outlined text-sm">trending_flat</span> -1.2%
+                                            </span>
+<span class="text-[9px] text-outline font-manrope uppercase">Stable Monitor</span>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-4 border-t border-outline-variant/10 bg-surface-container-low/50">
+<button class="w-full py-3 text-xs font-bold text-outline hover:text-primary transition-colors flex items-center justify-center gap-2 group font-manrope uppercase tracking-widest">
+                            View All Portfolio Assets <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Risk Intelligence Footer Actions -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="md:col-span-2 bg-gradient-to-r from-secondary-container/20 to-surface-container-high rounded-xl p-8 border border-outline-variant/10 flex items-center justify-between">
+<div class="max-w-md">
+<h3 class="text-xl font-bold font-headline text-on-surface mb-2">Automated Risk Reporting</h3>
+<p class="text-sm text-outline leading-relaxed font-manrope">Generate a comprehensive audit-ready risk assessment report for the current portfolio distribution and regional trends.</p>
+</div>
+<button class="px-8 py-4 bg-primary text-on-primary font-bold rounded-xl text-sm shadow-xl shadow-primary/20 hover:scale-105 transition-all font-manrope uppercase tracking-wider">
+                        Generate Report
+                    </button>
+</div>
+<div class="bg-surface-container-highest rounded-xl p-8 border border-outline-variant/10 flex flex-col justify-center">
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-tertiary">warning</span>
+<h3 class="font-bold text-on-surface">System Alerts</h3>
+</div>
+<p class="text-xs text-outline mb-4 leading-relaxed font-manrope">3 assets have crossed the critical liquidity threshold in the last 6 hours.</p>
+<button class="text-xs font-bold text-tertiary hover:underline flex items-center gap-1 font-manrope">
+                        Resolve Conflicts <span class="material-symbols-outlined text-xs">open_in_new</span>
+</button>
+</div>
+</section>
+</div>
+</main>
+<!-- Floating AI Assistant Button (Ask AI Risk Assistant) -->
+<div class="fixed bottom-8 right-8 z-[60]">
+<div class="group relative">
+<button class="w-16 h-16 bg-gradient-to-tr from-primary to-tertiary rounded-2xl flex items-center justify-center shadow-2xl shadow-tertiary/30 transform transition-all duration-300 hover:scale-110 active:scale-95 group-hover:rotate-6">
+<span class="material-symbols-outlined text-on-primary text-3xl" style="font-variation-settings: 'FILL' 1;">psychology_alt</span>
+</button>
+<div class="absolute bottom-full right-0 mb-4 opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 translate-y-2 group-hover:translate-y-0">
+<div class="bg-surface-bright text-on-surface p-4 rounded-xl border border-outline-variant/30 shadow-2xl min-w-[200px] whitespace-nowrap">
+<p class="text-xs font-bold font-headline mb-1">Risk Intelligence Bot</p>
+<p class="text-[10px] text-outline font-manrope">Ask me about portfolio volatility...</p>
+<div class="mt-3 h-8 bg-surface-container-low rounded-lg border border-outline-variant/10 flex items-center px-3">
+<span class="text-[10px] text-primary">Ask AI Risk Assistant</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body></html></body></html>

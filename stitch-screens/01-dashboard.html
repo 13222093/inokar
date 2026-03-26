@@ -1,0 +1,360 @@
+<!DOCTYPE html><html class="dark" lang="en"><head><meta charset="utf-8"/>
+
+
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "tertiary-fixed": "#26fedc",
+            "secondary-fixed-dim": "#b1c5ff",
+            "secondary": "#b1c5ff",
+            "on-secondary-fixed": "#001946",
+            "secondary-fixed": "#dae2ff",
+            "on-primary-container": "#00566a",
+            "surface-tint": "#4cd6ff",
+            "inverse-primary": "#00677f",
+            "outline-variant": "#3c494e",
+            "inverse-on-surface": "#2c3136",
+            "on-secondary-container": "#a6beff",
+            "on-error": "#690005",
+            "on-background": "#dee3ea",
+            "on-surface-variant": "#bbc9cf",
+            "on-tertiary-container": "#00594c",
+            "surface-container": "#1b2025",
+            "error-container": "#93000a",
+            "on-tertiary": "#00382f",
+            "tertiary-fixed-dim": "#00dfc1",
+            "primary-fixed-dim": "#4cd6ff",
+            "on-secondary": "#002c70",
+            "surface-variant": "#30353b",
+            "on-tertiary-fixed-variant": "#005144",
+            "secondary-container": "#0148ab",
+            "surface-container-low": "#171c21",
+            "surface-container-highest": "#30353b",
+            "primary-container": "#00d1ff",
+            "error": "#ffb4ab",
+            "on-surface": "#dee3ea",
+            "on-primary-fixed": "#001f28",
+            "on-secondary-fixed-variant": "#00419e",
+            "tertiary-container": "#00d8bb",
+            "surface-container-high": "#252a30",
+            "on-primary-fixed-variant": "#004e60",
+            "primary-fixed": "#b7eaff",
+            "surface-bright": "#353a3f",
+            "tertiary": "#0ef7d6",
+            "surface-dim": "#0f1419",
+            "outline": "#859399",
+            "on-tertiary-fixed": "#00201a",
+            "background": "#0f1419",
+            "on-error-container": "#ffdad6",
+            "inverse-surface": "#dee3ea",
+            "primary": "#a4e6ff",
+            "on-primary": "#003543",
+            "surface-container-lowest": "#0a0f14",
+            "surface": "#0f1419"
+          },
+          fontFamily: {
+            "headline": ["Manrope"],
+            "body": ["Inter"],
+            "label": ["Inter"]
+          },
+          borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .glass-effect {
+      background: rgba(53, 58, 63, 0.4);
+      backdrop-filter: blur(20px);
+    }
+    .liquid-gradient {
+      background: linear-gradient(135deg, #a4e6ff 0%, #00d1ff 100%);
+    }
+    .card-gradient {
+      background: linear-gradient(145deg, #252a30 0%, #171c21 100%);
+      border: 1px solid rgba(133, 147, 153, 0.08);
+    }
+  </style>
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-[#171c21] border-r border-[#3c494e]/15 flex flex-col py-8 z-50">
+<div class="px-6 mb-10">
+<h1 class="text-xl font-black text-[#a4e6ff] font-headline tracking-tighter">LiqUIFI</h1>
+<p class="text-[10px] uppercase tracking-[0.2em] text-[#859399] font-bold">Liquid Intelligence</p>
+</div>
+<nav class="flex-1 px-4 space-y-2">
+<div class="bg-[#252a30] text-[#0ef7d6] rounded-r-full border-l-4 border-[#0ef7d6] px-4 py-3 flex items-center gap-3 cursor-pointer duration-200">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-manrope font-semibold">Dashboard</span>
+</div>
+<div class="text-[#859399] hover:bg-[#252a30] hover:text-[#a4e6ff] px-4 py-3 flex items-center gap-3 cursor-pointer duration-200 transition-all">
+<span class="material-symbols-outlined" data-icon="domain">domain</span>
+<span class="font-manrope font-semibold">Property Portfolio</span>
+</div>
+<div class="text-[#859399] hover:bg-[#252a30] hover:text-[#a4e6ff] px-4 py-3 flex items-center gap-3 cursor-pointer duration-200 transition-all">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-manrope font-semibold">Risk Analytics</span>
+</div>
+<div class="text-[#859399] hover:bg-[#252a30] hover:text-[#a4e6ff] px-4 py-3 flex items-center gap-3 cursor-pointer duration-200 transition-all">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-manrope font-semibold">Settings</span>
+</div>
+</nav>
+<div class="px-6 mb-6">
+<button class="w-full liquid-gradient text-on-primary font-bold py-3 rounded-xl shadow-lg shadow-primary/10 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+        New Analysis
+      </button>
+</div>
+<div class="px-4 pt-6 border-t border-outline-variant/15 space-y-1">
+<div class="text-[#859399] hover:text-[#a4e6ff] px-4 py-2 flex items-center gap-3 cursor-pointer transition-all">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-manrope font-semibold text-sm">Support</span>
+</div>
+<div class="text-[#859399] hover:text-[#a4e6ff] px-4 py-2 flex items-center gap-3 cursor-pointer transition-all">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-manrope font-semibold text-sm">Logout</span>
+</div>
+</div>
+</aside>
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-40 bg-[#0f1419]/80 backdrop-blur-xl border-b border-[#3c494e]/15 flex justify-between items-center px-8 h-20 pl-[288px]">
+<div class="flex items-center gap-8">
+<div class="hidden md:flex gap-6 items-center">
+<a class="text-[#a4e6ff] border-b-2 border-[#a4e6ff] pb-1 font-manrope text-sm tracking-wide" href="#">Dashboard</a>
+<a class="text-[#859399] hover:text-[#0ef7d6] transition-colors duration-300 font-manrope text-sm tracking-wide" href="#">Portfolio</a>
+<a class="text-[#859399] hover:text-[#0ef7d6] transition-colors duration-300 font-manrope text-sm tracking-wide" href="#">Analytics</a>
+<a class="text-[#859399] hover:text-[#0ef7d6] transition-colors duration-300 font-manrope text-sm tracking-wide" href="#">Settings</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="bg-surface-container-high rounded-full px-4 py-2 flex items-center gap-3 focus-within:ring-2 ring-surface-tint/20 transition-all">
+<span class="material-symbols-outlined text-outline" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm text-on-surface w-48" placeholder="Search assets..." type="text"/>
+</div>
+<button class="text-[#859399] hover:text-[#a4e6ff] transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-[#859399] hover:text-[#a4e6ff] transition-colors">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-20 p-8 min-h-screen">
+<div class="max-w-7xl mx-auto space-y-8">
+<!-- Top Metrics Section -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="card-gradient p-6 rounded-xl relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-all"></div>
+<p class="text-outline text-xs font-bold uppercase tracking-widest mb-2">Liquidity Score</p>
+<div class="flex items-baseline gap-2">
+<h2 class="text-5xl font-black font-headline text-primary">78</h2>
+<span class="text-outline text-lg font-bold">/100</span>
+</div>
+<div class="mt-4 flex items-center gap-2 text-tertiary">
+<span class="material-symbols-outlined text-sm" data-icon="trending_up">trending_up</span>
+<span class="text-xs font-bold">+2.4% from last month</span>
+</div>
+</div>
+<div class="card-gradient p-6 rounded-xl relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-tertiary/5 rounded-full blur-2xl group-hover:bg-tertiary/10 transition-all"></div>
+<p class="text-outline text-xs font-bold uppercase tracking-widest mb-2">Portfolio Value</p>
+<div class="flex items-baseline gap-2">
+<h2 class="text-5xl font-black font-headline text-on-surface">£412.8M</h2>
+</div>
+<div class="mt-4 flex items-center gap-2 text-outline">
+<span class="material-symbols-outlined text-sm" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="text-xs font-bold">14 Active High-Value Assets</span>
+</div>
+</div>
+<div class="card-gradient p-6 rounded-xl relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-secondary/5 rounded-full blur-2xl group-hover:bg-secondary/10 transition-all"></div>
+<p class="text-outline text-xs font-bold uppercase tracking-widest mb-2">Avg. Time-to-Sell</p>
+<div class="flex items-baseline gap-2">
+<h2 class="text-5xl font-black font-headline text-secondary">42</h2>
+<span class="text-outline text-lg font-bold">Days</span>
+</div>
+<div class="mt-4 flex items-center gap-2 text-error">
+<span class="material-symbols-outlined text-sm" data-icon="schedule">schedule</span>
+<span class="text-xs font-bold">+5 days increase (Market Shift)</span>
+</div>
+</div>
+</section>
+<!-- Structured Address Search & Map View -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+<!-- Input Panel -->
+<div class="lg:col-span-5 card-gradient p-8 rounded-xl space-y-6">
+<div>
+<h2 class="font-headline text-4xl font-extrabold text-on-surface mb-4 leading-tight">Instant Asset <span class="bg-gradient-to-r from-primary to-primary-container bg-clip-text text-transparent">Liquidity Mapping.</span></h2>
+<p class="text-outline text-sm">Define property location for AI-driven liquidity analysis.</p>
+</div>
+<div class="space-y-4">
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-1.5">
+<label class="text-[10px] uppercase font-black text-outline tracking-wider ml-1">Country</label>
+<select class="w-full bg-surface-container-highest/50 border border-outline-variant/10 rounded-lg text-sm text-on-surface focus:ring-2 focus:ring-surface-tint/20 py-3">
+<option>United Kingdom</option>
+<option>United States</option>
+<option>Germany</option>
+</select>
+</div>
+<div class="space-y-1.5">
+<label class="text-[10px] uppercase font-black text-outline tracking-wider ml-1">Province / State</label>
+<select class="w-full bg-surface-container-highest/50 border border-outline-variant/10 rounded-lg text-sm text-on-surface focus:ring-2 focus:ring-surface-tint/20 py-3">
+<option>Greater London</option>
+<option>New York</option>
+<option>Bavaria</option>
+</select>
+</div>
+</div>
+<div class="space-y-1.5">
+<label class="text-[10px] uppercase font-black text-outline tracking-wider ml-1">City</label>
+<input class="w-full bg-surface-container-highest/50 border border-outline-variant/10 rounded-lg text-sm text-on-surface focus:ring-2 focus:ring-surface-tint/20 py-3" placeholder="e.g. London" type="text"/>
+</div>
+<div class="space-y-1.5">
+<label class="text-[10px] uppercase font-black text-outline tracking-wider ml-1">Street / Specific Address</label>
+<div class="flex gap-2">
+<input class="flex-1 bg-surface-container-highest/50 border border-outline-variant/10 rounded-lg text-sm text-on-surface focus:ring-2 focus:ring-surface-tint/20 py-3" placeholder="221B Baker St" type="text"/>
+<button class="bg-surface-container-lowest text-tertiary px-4 rounded-lg flex items-center justify-center hover:bg-surface-container-highest transition-all group border border-outline-variant/10" title="Pinpoint on Map">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform" data-icon="location_on">location_on</span>
+</button>
+</div>
+</div>
+</div>
+<button class="w-full bg-surface-container-lowest border border-tertiary/20 text-tertiary font-bold py-4 rounded-xl flex items-center justify-center gap-3 hover:bg-tertiary/10 transition-all">
+<span class="material-symbols-outlined" data-icon="auto_awesome">auto_awesome</span>
+            Run Predictive Analysis
+          </button>
+</div>
+<!-- Map Panel -->
+<div class="lg:col-span-7 rounded-xl overflow-hidden relative min-h-[400px] card-gradient">
+<img alt="Dark themed interactive satellite map of London with glowing data heatmaps and property pin markers in electric cyan" class="absolute inset-0 w-full h-full object-cover grayscale opacity-60" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0H88nQv3cvO-j7GpmzSAUhfvzUZZyPNhoYMU49f8am6VjNTiGe6XVV2gZqhmQXA1UuQyilXYMBaASJvn0GoLUeHxyJesZ43Q9UidVZpkMxeb2SCPvd5MvPlxrd-cuiGakoxktSzRAg2D1Z7RrssIRrIMKrSGc1FmBu2iAJKlaGTTxNrAP6YOUCFgZ_WcQUaRlNJRH7jCKL6zRTzIv2tbSwZLWaCaB4pQ139MRcggMugkgv6ajKr0mYPnlq4dVqgF1sbdUCHWxTnwk"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent pointer-events-none"></div>
+<!-- Map Overlay UI -->
+<div class="absolute top-6 right-6 flex flex-col gap-2">
+<button class="glass-effect p-2 rounded-lg text-on-surface hover:bg-surface-bright transition-all border border-white/5">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+<button class="glass-effect p-2 rounded-lg text-on-surface hover:bg-surface-bright transition-all border border-white/5">
+<span class="material-symbols-outlined" data-icon="remove">remove</span>
+</button>
+</div>
+<div class="absolute bottom-6 left-6 right-6 glass-effect p-4 rounded-xl flex items-center justify-between border border-white/10">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-tertiary/20 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined" data-icon="gps_fixed">gps_fixed</span>
+</div>
+<div>
+<p class="text-xs text-outline font-bold uppercase tracking-widest">Pin Precision</p>
+<p class="text-sm font-semibold text-on-surface">51.5237° N, 0.1585° W</p>
+</div>
+</div>
+<button class="text-xs font-bold text-tertiary bg-tertiary/10 px-4 py-2 rounded-full hover:bg-tertiary/20 transition-all border border-tertiary/20">Manual Adjust</button>
+</div>
+</div>
+</section>
+<!-- Recent Score Requests Table -->
+<section class="card-gradient rounded-xl overflow-hidden">
+<div class="p-6 flex justify-between items-center border-b border-outline-variant/10">
+<h3 class="font-headline text-xl font-bold">Recent Score Requests</h3>
+<button class="text-primary text-xs font-bold uppercase tracking-widest flex items-center gap-2 hover:opacity-80">
+            Export Report
+            <span class="material-symbols-outlined text-sm" data-icon="download">download</span>
+</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-lowest/30">
+<th class="px-6 py-4 text-[10px] uppercase font-black text-outline tracking-widest">Property Address</th>
+<th class="px-6 py-4 text-[10px] uppercase font-black text-outline tracking-widest">SME Name</th>
+<th class="px-6 py-4 text-[10px] uppercase font-black text-outline tracking-widest">Risk Status</th>
+<th class="px-6 py-4 text-[10px] uppercase font-black text-outline tracking-widest">Score</th>
+<th class="px-6 py-4 text-[10px] uppercase font-black text-outline tracking-widest">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/5">
+<tr class="hover:bg-white/[0.03] transition-colors group">
+<td class="px-6 py-5">
+<p class="text-sm font-semibold text-on-surface">88 Canary Wharf Tower</p>
+<p class="text-xs text-outline">London, E14 5AA</p>
+</td>
+<td class="px-6 py-5">
+<p class="text-sm font-medium">Lumina Tech Solutions</p>
+</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 rounded-full text-[10px] font-bold bg-tertiary/10 text-tertiary-fixed uppercase border border-tertiary/20">Low Risk</span>
+</td>
+<td class="px-6 py-5">
+<p class="text-lg font-bold text-primary">92</p>
+</td>
+<td class="px-6 py-5">
+<button class="text-outline group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-white/[0.03] transition-colors group">
+<td class="px-6 py-5">
+<p class="text-sm font-semibold text-on-surface">15 Innovation Drive</p>
+<p class="text-xs text-outline">Cambridge, CB4 0GZ</p>
+</td>
+<td class="px-6 py-5">
+<p class="text-sm font-medium">BioGen Research Lab</p>
+</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 rounded-full text-[10px] font-bold bg-error/10 text-error uppercase border border-error/20">High Risk</span>
+</td>
+<td class="px-6 py-5">
+<p class="text-lg font-bold text-error">34</p>
+</td>
+<td class="px-6 py-5">
+<button class="text-outline group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-white/[0.03] transition-colors group">
+<td class="px-6 py-5">
+<p class="text-sm font-semibold text-on-surface">The Printworks, Unit 4</p>
+<p class="text-xs text-outline">Manchester, M4 2AD</p>
+</td>
+<td class="px-6 py-5">
+<p class="text-sm font-medium">Vortex Creative Agency</p>
+</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 rounded-full text-[10px] font-bold bg-secondary/10 text-secondary uppercase border border-secondary/20">Moderate</span>
+</td>
+<td class="px-6 py-5">
+<p class="text-lg font-bold text-secondary">67</p>
+</td>
+<td class="px-6 py-5">
+<button class="text-outline group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+</main>
+<!-- Contextual FAB (Only on Dashboard) -->
+<button class="fixed bottom-10 right-10 w-16 h-16 rounded-full liquid-gradient text-on-primary shadow-2xl shadow-primary/40 flex items-center justify-center group hover:scale-110 active:scale-95 transition-all z-50">
+<span class="material-symbols-outlined text-3xl font-bold" data-icon="add_location_alt">add_location_alt</span>
+<span class="absolute right-20 bg-surface-container-highest px-4 py-2 rounded-lg text-xs font-bold text-on-surface opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-outline-variant/10">New Asset Scan</span>
+</button>
+</body></html>
