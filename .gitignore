@@ -28,3 +28,6 @@ server/.env
 server/dist
 build-log.txt
 tsc-errors.txt
+
+# Gemini config (contains API keys)
+.gemini/
