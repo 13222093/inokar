@@ -31,3 +31,6 @@ tsc-errors.txt
 
 # Gemini config (contains API keys)
 .gemini/
+
+# Local Claude Code config
+.claude/

@@ -9,7 +9,7 @@ interface ApiResponse<T> {
 }
 
 async function fetchApi<T>(endpoint: string, options?: RequestInit): Promise<ApiResponse<T>> {
-  const token = localStorage.getItem('liquifi_token');
+  const token = localStorage.getItem('appraisiq_token');
   const res = await fetch(`${API_BASE}${endpoint}`, {
     ...options,
     headers: {
@@ -147,5 +147,5 @@ export async function register(email: string, name: string, password: string) {
 }
 
 export function logout() {
-  localStorage.removeItem('liquifi_token');
+  localStorage.removeItem('appraisiq_token');
 }

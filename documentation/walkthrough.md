@@ -1,8 +1,8 @@
-# LiqUIFI Backend Implementation Walkthrough
+# AppraisIQ Backend Implementation Walkthrough
 
 ## What Was Built
 
-A complete Express + TypeScript + Prisma backend API for the LiqUIFI Dashboard, with a frontend API client featuring mock data fallbacks for MVP use.
+A complete Express + TypeScript + Prisma backend API for the AppraisIQ Dashboard, with a frontend API client featuring mock data fallbacks for MVP use.
 
 ## Server Architecture
 
@@ -63,8 +63,8 @@ npm run db:seed
 npm run dev
 
 # Terminal 2: Start frontend
-cd liquifi
+cd appraisiq
 npm run dev
 ```
 
-Demo credentials: `analyst@liquifi.io` / `demo1234`
+Demo credentials: `analyst@appraisiq.io` / `demo1234`

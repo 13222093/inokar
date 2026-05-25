@@ -1,17 +1,17 @@
-# LiqUIFI Backend Implementation Plan (v2)
+# AppraisIQ Backend Implementation Plan (v2)
 
 ## 0. Prerequisites
 
 | Requirement | Details |
 |-------------|---------|
 | **Node.js** | v20+ LTS |
-| **PostgreSQL** | v15+ running locally (or Docker: `docker run -p 5432:5432 -e POSTGRES_PASSWORD=liquifi postgres:15`) |
+| **PostgreSQL** | v15+ running locally (or Docker: `docker run -p 5432:5432 -e POSTGRES_PASSWORD=appraisiq postgres:15`) |
 | **Package Manager** | npm |
 
 ### Environment Variables (`.env`)
 
 ```env
-DATABASE_URL="postgresql://postgres:liquifi@localhost:5432/liquifi?schema=public"
+DATABASE_URL="postgresql://postgres:appraisiq@localhost:5432/appraisiq?schema=public"
 JWT_SECRET="your-256-bit-secret"
 JWT_EXPIRES_IN="7d"
 PORT=3001
@@ -360,7 +360,7 @@ model GeocodeCache {
 ## 7. Directory Structure
 
 ```
-liquifi/
+appraisiq/
 ├── src/                          # Frontend
 │   ├── lib/
 │   │   └── api.ts                # [NEW] Centralized API client

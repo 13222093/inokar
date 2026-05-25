@@ -50,11 +50,11 @@ async function main() {
   // Create demo user
   const password = await bcrypt.hash('demo1234', 12);
   const user = await prisma.user.create({
-    data: { email: 'analyst@liquifi.io', name: 'Analyst 042', role: 'ANALYST', password },
+    data: { email: 'analyst@appraisiq.io', name: 'Analyst 042', role: 'ANALYST', password },
   });
 
   const admin = await prisma.user.create({
-    data: { email: 'admin@liquifi.io', name: 'Marcus Chen', role: 'ADMIN', password },
+    data: { email: 'admin@appraisiq.io', name: 'Marcus Chen', role: 'ADMIN', password },
   });
 
   // Create 174 properties: 142 ACTIVE, 28 UNDER_REVIEW, 4 RISK_DETECTED

@@ -52,7 +52,7 @@ app.use((err: Error, _req: express.Request, res: express.Response, _next: expres
 });
 
 app.listen(env.PORT, () => {
-  console.log(`🚀 LiqUIFI API running on http://localhost:${env.PORT}`);
+  console.log(`🚀 AppraisIQ API running on http://localhost:${env.PORT}`);
 });
 
 export default app;

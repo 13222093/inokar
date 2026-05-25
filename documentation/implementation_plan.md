@@ -1,11 +1,11 @@
-# LiqUIFI Frontend Implementation Plan
+# AppraisIQ Frontend Implementation Plan
 
-This plan details the process of converting the downloaded Google Stitch HTML screens for "LiqUIFI Dashboard Overview" into a production-ready, interactive React frontend using Vite and Tailwind CSS. The design strictly adheres to the "Liquid Intelligence Framework".
+This plan details the process of converting the downloaded Google Stitch HTML screens for "AppraisIQ Dashboard Overview" into a production-ready, interactive React frontend using Vite and Tailwind CSS. The design strictly adheres to the "Liquid Intelligence Framework".
 
 ## Proposed Changes
 
 ### 1. Project Initialization & Architecture
-We will set up a new React + TypeScript project using Vite inside the `liquifi` workspace root. We will run this scaffolding via Vite's automated initialization.
+We will set up a new React + TypeScript project using Vite inside the `appraisiq` workspace root. We will run this scaffolding via Vite's automated initialization.
 - **Framework:** React + TypeScript (via Vite)
 - **Styling:** Tailwind CSS + PostCSS
 - **Routing:** React Router DOM

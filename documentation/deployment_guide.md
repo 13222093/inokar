@@ -1,4 +1,4 @@
-# LiqUIFI Deployment Guide
+# AppraisIQ Deployment Guide
 
 ## Prerequisites
 
@@ -13,11 +13,11 @@ Before deploying, you need:
 ## Step 0: Push to GitHub
 
 ```bash
-cd c:\Users\Ari Azis\Downloads\liquifi
+cd c:\Users\Ari Azis\Downloads\appraisiq
 git init
 git add .
-git commit -m "Initial commit: LiqUIFI Dashboard"
-git remote add origin https://github.com/YOUR_USERNAME/liquifi.git
+git commit -m "Initial commit: AppraisIQ Dashboard"
+git remote add origin https://github.com/YOUR_USERNAME/appraisiq.git
 git push -u origin main
 ```
 
@@ -34,7 +34,7 @@ git push -u origin main
 | Step | Action |
 |------|--------|
 | 1 | Go to railway.app → Sign in with GitHub |
-| 2 | **New Project** → "Deploy from GitHub repo" → select `liquifi` |
+| 2 | **New Project** → "Deploy from GitHub repo" → select `appraisiq` |
 | 3 | **Add PostgreSQL** → Click "+ New" → "Database" → "PostgreSQL" |
 | 4 | Railway auto-provides `DATABASE_URL` — copy it |
 | 5 | **Backend service**: Set root directory to `server/`, add env vars (see below) |
@@ -90,7 +90,7 @@ Same as Option A steps 2-5.
 | Database | Neon | 0.5GB, always-on |
 
 #### Database (Neon)
-1. Go to neon.tech → Create project "liquifi"
+1. Go to neon.tech → Create project "appraisiq"
 2. Copy the connection string → this is your `DATABASE_URL`
 
 #### Backend (Render)
