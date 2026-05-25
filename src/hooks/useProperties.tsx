@@ -25,6 +25,9 @@ export interface Property {
   assessments: PropertyAssessment[];
   summary: string;
   createdAt: string;
+  imageUrl?: string;
+  capRate?: number;
+  occupancyRate?: number;
 }
 
 const STORAGE_KEY = 'appraisiq_properties';
@@ -52,6 +55,9 @@ const SEED: Property[] = [
     ],
     summary: 'Class A commercial office in prime Midtown Manhattan location with strong tenant profile and minor CapEx requirements. High liquidity confidence.',
     createdAt: daysAgo(7),
+    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCTWcdKXrOsrQ72tkfeQxBFHZDpKD5jIXN1CIVkjWYGfkPfD8KEt55Arm9sWPJNIjNq1sPnAnInFTCEbpqeKHdo7mM3J5Dd9SLbmaWSa97fGVbaZBUpfHL4Ayz1safPda5zV9ZPJDzrReivtRiF1nNJXR40INGj5zJg0jQBrAouytwZj7UH0GyYGVU6pSAN2qqBHtIRF2H3Wo-rD7UtAcmrGM8J2IGEMDZ75cacFQzNHhhsbFm7V1UXqPoB9vQQxawUHw84GZpfFzbP',
+    capRate: 5.8,
+    occupancyRate: 96,
   },
   {
     id: 'seed-002',
@@ -73,6 +79,8 @@ const SEED: Property[] = [
     ],
     summary: 'Class A office tower in Canary Wharf with stable demand and solid recent comparables. Cross-border buyers may be price-sensitive to GBP movement.',
     createdAt: daysAgo(3),
+    capRate: 5.2,
+    occupancyRate: 91,
   },
   {
     id: 'seed-003',
@@ -94,6 +102,9 @@ const SEED: Property[] = [
     ],
     summary: 'Industrial asset facing significant headwinds: sector softening, single-tenant lease expiry approaching, and below-market rent. Liquidity is impaired.',
     createdAt: daysAgo(1),
+    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBK2lkIEP74GQ6O-76Yftkrv0wtT9GCpDUUad0NZWrBKk1GsHRndZ1o713FknqyrVUdMiMmnShnJvgh8RRUQS1yc_72GtjNo_kgWhiCBBIaPN7chzpVs2_4tcC9j0uU3AFgc-er2undGa9INpM9MiChAhA5zQFcvALn-zy5A1FWCP-sNT3n96VRwtby6AZwfrzdV5Ah1QaUIIGgiI8hOKke6C0R3KuIjkYeltP3CfHXumK2SCSJAyJX7fbFbwsZlqO1ORvOogIo4e5T',
+    capRate: 7.4,
+    occupancyRate: 78,
   },
 ];
 
@@ -112,8 +123,14 @@ const loadInitial = (): Property[] => {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
-      const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      const parsed: Property[] = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        const seedById = new Map(SEED.map(s => [s.id, s]));
+        const merged = parsed.map(p => seedById.has(p.id) ? { ...p, ...seedById.get(p.id)! } : p);
+        const userAdded = parsed.filter(p => !p.id.startsWith('seed-'));
+        const seedRefreshed = SEED.map(s => merged.find(p => p.id === s.id) || s);
+        return [...userAdded, ...seedRefreshed];
+      }
     }
   } catch {
     // ignore corrupted storage

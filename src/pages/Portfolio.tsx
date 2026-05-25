@@ -1,10 +1,70 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { Layout } from '../components/Layout';
 import { Card } from '../components/Card';
 import { Button } from '../components/Button';
 import { ComingSoon } from '../components/ComingSoon';
+import { useProperties, type Property, type RiskStatus } from '../hooks/useProperties';
+
+const fmtMoney = (n: number) => {
+  if (n >= 1e9) return `$${(n / 1e9).toFixed(2)}B`;
+  if (n >= 1e6) return `$${(n / 1e6).toFixed(1)}M`;
+  if (n >= 1e3) return `$${(n / 1e3).toFixed(1)}K`;
+  return `$${n.toFixed(0)}`;
+};
+
+const riskMeta = (status: RiskStatus) => {
+  if (status === 'LOW_RISK') return { label: 'Prime Active', dot: 'bg-tertiary shadow-[0_0_8px_#0ef7d6]', title: 'group-hover:text-primary', scoreBg: 'bg-surface-container-lowest', scoreText: 'text-tertiary', overlayGrad: 'from-black/60' };
+  if (status === 'MEDIUM_RISK') return { label: 'Under Review', dot: 'bg-secondary shadow-[0_0_8px_#facc15]', title: 'group-hover:text-secondary', scoreBg: 'bg-secondary/10 border border-secondary/20', scoreText: 'text-secondary', overlayGrad: 'from-black/70' };
+  return { label: 'Risk Detected', dot: 'bg-error shadow-[0_0_8px_#ffb4ab]', title: 'group-hover:text-error', scoreBg: 'bg-error/10 border border-error/20', scoreText: 'text-error', overlayGrad: 'from-black/80' };
+};
+
+const PropertyHero: React.FC<{ property: Property }> = ({ property }) => {
+  const meta = riskMeta(property.riskStatus);
+  if (property.imageUrl) {
+    return (
+      <div className="relative w-full md:w-48 h-32 flex-shrink-0 overflow-hidden rounded-xl">
+        <img className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 ${property.riskStatus === 'HIGH_RISK' ? 'grayscale group-hover:grayscale-0' : ''}`} src={property.imageUrl} alt={property.name} />
+        <div className={`absolute inset-0 bg-gradient-to-t ${meta.overlayGrad} to-transparent`}></div>
+        <div className="absolute bottom-2 left-2 flex items-center gap-1.5">
+          <span className={`w-2 h-2 rounded-full ${meta.dot}`}></span>
+          <span className="text-[10px] font-bold text-white uppercase tracking-tighter">{meta.label}</span>
+        </div>
+      </div>
+    );
+  }
+  // Gradient fallback for properties without imageUrl
+  const initials = property.name.split(/\s+/).slice(0, 2).map(w => w[0]?.toUpperCase()).join('') || '?';
+  const gradient = property.riskStatus === 'LOW_RISK'
+    ? 'from-tertiary/30 via-primary/20 to-surface-container-highest'
+    : property.riskStatus === 'MEDIUM_RISK'
+      ? 'from-secondary/30 via-primary/10 to-surface-container-highest'
+      : 'from-error/30 via-surface-container-high to-surface-container-highest';
+  return (
+    <div className={`relative w-full md:w-48 h-32 flex-shrink-0 overflow-hidden rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center`}>
+      <span className="text-4xl font-black font-headline text-on-surface/70">{initials}</span>
+      <div className="absolute bottom-2 left-2 flex items-center gap-1.5">
+        <span className={`w-2 h-2 rounded-full ${meta.dot}`}></span>
+        <span className="text-[10px] font-bold text-on-surface uppercase tracking-tighter">{meta.label}</span>
+      </div>
+    </div>
+  );
+};
 
 export const Portfolio: React.FC = () => {
+  const { properties } = useProperties();
+
+  const distribution = useMemo(() => {
+    const lowRisk = properties.filter(p => p.riskStatus === 'LOW_RISK').length;
+    const mediumRisk = properties.filter(p => p.riskStatus === 'MEDIUM_RISK').length;
+    const highRisk = properties.filter(p => p.riskStatus === 'HIGH_RISK').length;
+    return { lowRisk, mediumRisk, highRisk };
+  }, [properties]);
+
+  const sorted = useMemo(() =>
+    [...properties].sort((a, b) => b.liquidityScore - a.liquidityScore),
+  [properties]);
+
   return (
     <Layout>
       <div className="flex justify-between items-end mb-10">
@@ -28,24 +88,28 @@ export const Portfolio: React.FC = () => {
             <h3 className="font-headline text-lg font-bold text-primary">Portfolio Distribution</h3>
             <div className="space-y-4">
               <Card level="high" nested>
-                <p className="text-[10px] text-outline uppercase tracking-widest font-bold mb-1">High Liquidity</p>
+                <p className="text-[10px] text-outline uppercase tracking-widest font-bold mb-1">Low Risk</p>
                 <div className="flex justify-between items-end">
-                  <span className="text-2xl font-bold text-tertiary">142</span>
-                  <span className="text-xs text-tertiary flex items-center gap-1"><span className="material-symbols-outlined text-sm">trending_up</span> 12%</span>
+                  <span className="text-2xl font-bold text-tertiary">{String(distribution.lowRisk).padStart(2, '0')}</span>
+                  <span className="text-xs text-tertiary flex items-center gap-1"><span className="material-symbols-outlined text-sm">trending_up</span> Stable</span>
                 </div>
               </Card>
               <Card level="high" nested>
-                <p className="text-[10px] text-outline uppercase tracking-widest font-bold mb-1">Under Review</p>
+                <p className="text-[10px] text-outline uppercase tracking-widest font-bold mb-1">Medium Risk</p>
                 <div className="flex justify-between items-end">
-                  <span className="text-2xl font-bold text-on-surface">28</span>
-                  <span className="text-xs text-outline flex items-center gap-1">Stable</span>
+                  <span className="text-2xl font-bold text-on-surface">{String(distribution.mediumRisk).padStart(2, '0')}</span>
+                  <span className="text-xs text-outline flex items-center gap-1">Monitor</span>
                 </div>
               </Card>
               <Card level="high" nested>
-                <p className="text-[10px] text-outline uppercase tracking-widest font-bold mb-1">Risk Warning</p>
+                <p className="text-[10px] text-outline uppercase tracking-widest font-bold mb-1">High Risk</p>
                 <div className="flex justify-between items-end">
-                  <span className="text-2xl font-bold text-error">04</span>
-                  <span className="text-xs text-error flex items-center gap-1"><span className="material-symbols-outlined text-sm">warning</span> Action Req.</span>
+                  <span className="text-2xl font-bold text-error">{String(distribution.highRisk).padStart(2, '0')}</span>
+                  {distribution.highRisk > 0 ? (
+                    <span className="text-xs text-error flex items-center gap-1"><span className="material-symbols-outlined text-sm">warning</span> Action Req.</span>
+                  ) : (
+                    <span className="text-xs text-outline">All clear</span>
+                  )}
                 </div>
               </Card>
             </div>
@@ -63,83 +127,63 @@ export const Portfolio: React.FC = () => {
                 <button className="text-sm font-medium text-outline">Value</button>
               </ComingSoon>
             </div>
-            <div className="text-xs text-outline">Showing <span className="text-on-surface font-bold">14 Properties</span></div>
+            <div className="text-xs text-outline">Showing <span className="text-on-surface font-bold">{properties.length} {properties.length === 1 ? 'Property' : 'Properties'}</span></div>
           </div>
-          
-          <div className="space-y-4">
-            <div className="group flex flex-col md:flex-row items-center gap-6 p-4 bg-surface-container-low md:rounded-full rounded-xl hover:bg-surface-container-high transition-all border border-transparent hover:border-tertiary/10">
-              <div className="relative w-full md:w-48 h-32 flex-shrink-0 overflow-hidden rounded-xl">
-                <img className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTWcdKXrOsrQ72tkfeQxBFHZDpKD5jIXN1CIVkjWYGfkPfD8KEt55Arm9sWPJNIjNq1sPnAnInFTCEbpqeKHdo7mM3J5Dd9SLbmaWSa97fGVbaZBUpfHL4Ayz1safPda5zV9ZPJDzrReivtRiF1nNJXR40INGj5zJg0jQBrAouytwZj7UH0GyYGVU6pSAN2qqBHtIRF2H3Wo-rD7UtAcmrGM8J2IGEMDZ75cacFQzNHhhsbFm7V1UXqPoB9vQQxawUHw84GZpfFzbP"/>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                <div className="absolute bottom-2 left-2 flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-tertiary shadow-[0_0_8px_#0ef7d6]"></span>
-                  <span className="text-[10px] font-bold text-white uppercase tracking-tighter">Prime Active</span>
-                </div>
-              </div>
-              <div className="flex-1 grid grid-cols-1 md:grid-cols-12 gap-4 w-full items-center">
-                <div className="md:col-span-4">
-                  <h4 className="font-headline text-lg font-bold text-on-surface group-hover:text-primary transition-colors">One Central Plaza</h4>
-                  <p className="text-sm text-outline flex items-center gap-1"><span className="material-symbols-outlined text-sm">location_on</span> Midtown, New York</p>
-                </div>
-                <div className="md:col-span-3">
-                  <div className="text-center px-4 py-2 bg-surface-container-lowest rounded-xl">
-                    <p className="text-[9px] text-outline uppercase tracking-widest mb-1">Liquidity Score</p>
-                    <p className="text-2xl font-bold font-headline text-tertiary">94.8</p>
-                  </div>
-                </div>
-                <div className="md:col-span-3 text-center">
-                  <p className="text-[9px] text-outline uppercase tracking-widest mb-1">Market Value</p>
-                  <p className="text-lg font-bold text-on-surface">$142.5M</p>
-                  <p className="text-[10px] text-tertiary">+4.2% YoY</p>
-                </div>
-                <div className="md:col-span-2 flex flex-col gap-2">
-                  <ComingSoon label="Per-asset export — Coming Q2 2026" block>
-                    <button className="w-full py-2 px-3 rounded-xl bg-surface-container-highest text-primary text-[11px] font-bold">Export</button>
-                  </ComingSoon>
-                  <ComingSoon label="Review workflow — Coming Q2 2026" block>
-                    <button className="w-full py-2 px-3 rounded-xl border border-outline-variant/30 text-on-surface text-[11px] font-bold">Review</button>
-                  </ComingSoon>
-                </div>
-              </div>
-            </div>
 
-            <div className="group flex flex-col md:flex-row items-center gap-6 p-4 bg-surface-container-low md:rounded-full rounded-xl hover:bg-surface-container-high transition-all border border-transparent hover:border-tertiary/10">
-              <div className="relative w-full md:w-48 h-32 flex-shrink-0 overflow-hidden rounded-xl">
-                <img className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 grayscale group-hover:grayscale-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBK2lkIEP74GQ6O-76Yftkrv0wtT9GCpDUUad0NZWrBKk1GsHRndZ1o713FknqyrVUdMiMmnShnJvgh8RRUQS1yc_72GtjNo_kgWhiCBBIaPN7chzpVs2_4tcC9j0uU3AFgc-er2undGa9INpM9MiChAhA5zQFcvALn-zy5A1FWCP-sNT3n96VRwtby6AZwfrzdV5Ah1QaUIIGgiI8hOKke6C0R3KuIjkYeltP3CfHXumK2SCSJAyJX7fbFbwsZlqO1ORvOogIo4e5T"/>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
-                <div className="absolute bottom-2 left-2 flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-error shadow-[0_0_8px_#ffb4ab]"></span>
-                  <span className="text-[10px] font-bold text-white uppercase tracking-tighter">Risk Detected</span>
-                </div>
-              </div>
-              <div className="flex-1 grid grid-cols-1 md:grid-cols-12 gap-4 w-full items-center">
-                <div className="md:col-span-4">
-                  <h4 className="font-headline text-lg font-bold text-on-surface group-hover:text-error transition-colors">Harbor Industrial Park</h4>
-                  <p className="text-sm text-outline flex items-center gap-1"><span className="material-symbols-outlined text-sm">location_on</span> Seattle, WA</p>
-                </div>
-                <div className="md:col-span-3">
-                  <div className="text-center px-4 py-2 bg-error/10 border border-error/20 rounded-xl">
-                    <p className="text-[9px] text-error uppercase tracking-widest mb-1">Liquidity Score</p>
-                    <p className="text-2xl font-bold font-headline text-error">44.5</p>
-                  </div>
-                </div>
-                <div className="md:col-span-3 text-center">
-                  <p className="text-[9px] text-outline uppercase tracking-widest mb-1">Market Value</p>
-                  <p className="text-lg font-bold text-on-surface">$24.1M</p>
-                  <p className="text-[10px] text-error">-12.4% YoY</p>
-                </div>
-                <div className="md:col-span-2 flex flex-col gap-2">
-                  <ComingSoon label="Per-asset export — Coming Q2 2026" block>
-                    <button className="w-full py-2 px-3 rounded-xl bg-surface-container-highest text-primary text-[11px] font-bold">Export</button>
-                  </ComingSoon>
-                  <ComingSoon label="Alert resolution — Coming Q2 2026" block>
-                    <button className="w-full py-2 px-3 rounded-xl bg-error/20 text-error text-[11px] font-bold">Resolve Alert</button>
-                  </ComingSoon>
-                </div>
-              </div>
+          {sorted.length === 0 ? (
+            <Card className="text-center py-16">
+              <p className="text-outline text-sm mb-4">Your portfolio is empty.</p>
+              <Link to="/" className="inline-flex items-center gap-2 text-primary text-sm font-bold underline">
+                Run your first analysis <span className="material-symbols-outlined text-sm">arrow_forward</span>
+              </Link>
+            </Card>
+          ) : (
+            <div className="space-y-4">
+              {sorted.map(p => {
+                const meta = riskMeta(p.riskStatus);
+                return (
+                  <Link
+                    key={p.id}
+                    to={`/portfolio/${p.id}`}
+                    className="group flex flex-col md:flex-row items-center gap-6 p-4 bg-surface-container-low md:rounded-full rounded-xl hover:bg-surface-container-high transition-all border border-transparent hover:border-tertiary/10"
+                  >
+                    <PropertyHero property={p} />
+                    <div className="flex-1 grid grid-cols-1 md:grid-cols-12 gap-4 w-full items-center">
+                      <div className="md:col-span-4">
+                        <h4 className={`font-headline text-lg font-bold text-on-surface transition-colors ${meta.title}`}>{p.name}</h4>
+                        <p className="text-sm text-outline flex items-center gap-1"><span className="material-symbols-outlined text-sm">location_on</span> {p.city}{p.state ? `, ${p.state}` : ''}</p>
+                      </div>
+                      <div className="md:col-span-3">
+                        <div className={`text-center px-4 py-2 rounded-xl ${meta.scoreBg}`}>
+                          <p className="text-[9px] text-outline uppercase tracking-widest mb-1">Liquidity Score</p>
+                          <p className={`text-2xl font-bold font-headline ${meta.scoreText}`}>{p.liquidityScore.toFixed(1)}</p>
+                        </div>
+                      </div>
+                      <div className="md:col-span-3 text-center">
+                        <p className="text-[9px] text-outline uppercase tracking-widest mb-1">Market Value</p>
+                        <p className="text-lg font-bold text-on-surface">{fmtMoney(p.marketValue)}</p>
+                        <p className="text-[10px] text-outline">{p.timeToLiquidity} days to sell</p>
+                      </div>
+                      <div className="md:col-span-2 flex flex-col gap-2" onClick={e => { e.stopPropagation(); e.preventDefault(); }}>
+                        <ComingSoon label="Per-asset export — Coming Q2 2026" block>
+                          <button className="w-full py-2 px-3 rounded-xl bg-surface-container-highest text-primary text-[11px] font-bold">Export</button>
+                        </ComingSoon>
+                        {p.riskStatus === 'HIGH_RISK' ? (
+                          <ComingSoon label="Alert resolution — Coming Q2 2026" block>
+                            <button className="w-full py-2 px-3 rounded-xl bg-error/20 text-error text-[11px] font-bold">Resolve Alert</button>
+                          </ComingSoon>
+                        ) : (
+                          <ComingSoon label="Review workflow — Coming Q2 2026" block>
+                            <button className="w-full py-2 px-3 rounded-xl border border-outline-variant/30 text-on-surface text-[11px] font-bold">Review</button>
+                          </ComingSoon>
+                        )}
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
-            
-          </div>
+          )}
         </div>
       </div>
     </Layout>
