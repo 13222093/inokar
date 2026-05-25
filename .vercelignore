@@ -1,0 +1,8 @@
+# Dev-only artifacts not needed by Vercel build
+stitch-screens/
+documentation/
+server/
+.gemini/
+.claude/
+build-log.txt
+tsc-errors.txt

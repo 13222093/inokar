@@ -6,6 +6,44 @@ import { Input } from '../components/Input';
 import { Layout } from '../components/Layout';
 import { ComingSoon } from '../components/ComingSoon';
 import { useProperties, type Property, type RiskStatus } from '../hooks/useProperties';
+import { useToast } from '../hooks/useToast';
+
+const ResultSkeleton: React.FC = () => (
+  <Card className="lg:col-span-7 space-y-6 animate-pulse">
+    <div className="flex items-center justify-between">
+      <div className="h-6 w-44 bg-surface-container-highest rounded" />
+      <div className="h-6 w-20 bg-surface-container-highest rounded-full" />
+    </div>
+    <div className="grid grid-cols-3 gap-4">
+      {[0, 1, 2].map(i => (
+        <div key={i} className="text-center space-y-2">
+          <div className="h-10 w-16 mx-auto bg-surface-container-highest rounded" />
+          <div className="h-3 w-20 mx-auto bg-surface-container-highest rounded" />
+        </div>
+      ))}
+    </div>
+    <div className="space-y-2">
+      <div className="h-3 w-full bg-surface-container-highest rounded" />
+      <div className="h-3 w-5/6 bg-surface-container-highest rounded" />
+      <div className="h-3 w-4/6 bg-surface-container-highest rounded" />
+    </div>
+    <div className="space-y-3">
+      {[0, 1, 2].map(i => (
+        <div key={i} className="flex items-start gap-3 p-3 rounded-lg bg-surface-container-lowest/30">
+          <div className="h-5 w-5 bg-surface-container-highest rounded-full" />
+          <div className="flex-1 space-y-2">
+            <div className="h-3 w-32 bg-surface-container-highest rounded" />
+            <div className="h-3 w-full bg-surface-container-highest rounded" />
+          </div>
+        </div>
+      ))}
+    </div>
+    <div className="flex items-center justify-center gap-2 text-outline text-xs font-bold pt-2">
+      <span className="material-symbols-outlined text-sm animate-spin">progress_activity</span>
+      Running predictive analysis…
+    </div>
+  </Card>
+);
 
 interface AnalysisResult {
   liquidityScore: number;
@@ -34,6 +72,7 @@ const scoreColor = (score: number) => score >= 80 ? 'text-tertiary' : score >= 6
 export const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const { properties, addProperty } = useProperties();
+  const { success, error: toastError } = useToast();
 
   const [country, setCountry] = useState('United Kingdom');
   const [state, setState] = useState('Greater London');
@@ -42,7 +81,6 @@ export const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [error, setError] = useState('');
-  const [savedToast, setSavedToast] = useState<string | null>(null);
   const [exportingId, setExportingId] = useState<string | null>(null);
 
   const runAnalysis = async () => {
@@ -74,13 +112,18 @@ export const Dashboard: React.FC = () => {
           assessments: analysis.assessments,
           summary: analysis.summary,
         });
-        setSavedToast(saved.name);
-        window.setTimeout(() => setSavedToast(null), 4000);
+        success(`Saved "${saved.name}" to portfolio`, {
+          action: { label: 'View in portfolio →', onClick: () => navigate(`/portfolio/${saved.id}`) },
+        });
       } else {
-        setError(data.error?.message || 'Analysis failed');
+        const msg = data.error?.message || 'Analysis failed';
+        setError(msg);
+        toastError(msg);
       }
     } catch {
-      setError('Network error — try again');
+      const msg = 'Network error — try again';
+      setError(msg);
+      toastError(msg);
     } finally {
       setLoading(false);
     }
@@ -135,7 +178,7 @@ export const Dashboard: React.FC = () => {
       URL.revokeObjectURL(url);
     } catch (err) {
       console.error(err);
-      setError('Export failed. Check your connection.');
+      toastError('Export failed. Check your connection and retry.');
     } finally {
       setExportingId(null);
     }
@@ -182,13 +225,6 @@ export const Dashboard: React.FC = () => {
           </div>
         </Card>
       </section>
-
-      {savedToast && (
-        <div className="bg-tertiary/10 border border-tertiary/30 text-tertiary px-4 py-3 rounded-xl flex items-center gap-3 animate-pulse">
-          <span className="material-symbols-outlined">check_circle</span>
-          <p className="text-sm font-bold">Saved <span className="text-tertiary-fixed">{savedToast}</span> to your portfolio. <button onClick={() => navigate('/portfolio')} className="underline ml-2">View portfolio →</button></p>
-        </div>
-      )}
 
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
         <Card className="lg:col-span-5 space-y-6">
@@ -247,7 +283,9 @@ export const Dashboard: React.FC = () => {
           </Button>
         </Card>
 
-        {result ? (
+        {loading ? (
+          <ResultSkeleton />
+        ) : result ? (
           <Card className="lg:col-span-7 space-y-6">
             <div className="flex items-center justify-between">
               <h3 className="font-headline text-xl font-bold">AI Analysis Result</h3>
