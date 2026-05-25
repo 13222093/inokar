@@ -2,6 +2,7 @@ import React from 'react';
 import { Layout } from '../components/Layout';
 import { Card } from '../components/Card';
 import { Button } from '../components/Button';
+import { ComingSoon } from '../components/ComingSoon';
 
 export const Portfolio: React.FC = () => {
   return (
@@ -12,8 +13,12 @@ export const Portfolio: React.FC = () => {
           <p className="text-outline max-w-lg">Manage and analyze your high-liquidity real estate assets with real-time AI appraisal scores and automated risk monitoring.</p>
         </div>
         <div className="flex gap-4">
-          <Button variant="secondary" icon={<span className="material-symbols-outlined">filter_list</span>}>Filters</Button>
-          <Button icon={<span className="material-symbols-outlined">add_circle</span>}>Register Asset</Button>
+          <ComingSoon label="Filters — Coming Q2 2026">
+            <Button variant="secondary" icon={<span className="material-symbols-outlined">filter_list</span>}>Filters</Button>
+          </ComingSoon>
+          <ComingSoon label="Bulk register — Coming Q2 2026. Use Dashboard scan instead.">
+            <Button icon={<span className="material-symbols-outlined">add_circle</span>}>Register Asset</Button>
+          </ComingSoon>
         </div>
       </div>
 
@@ -51,8 +56,12 @@ export const Portfolio: React.FC = () => {
           <div className="flex items-center justify-between bg-surface-container-low/50 p-4 rounded-xl border border-outline-variant/10">
             <div className="flex items-center gap-6">
               <span className="text-xs font-bold text-outline">Sort by:</span>
-              <button className="text-sm font-bold text-tertiary flex items-center gap-1">Liquidity <span className="material-symbols-outlined text-sm">arrow_downward</span></button>
-              <button className="text-sm font-medium text-outline hover:text-on-surface">Value</button>
+              <ComingSoon label="Sorting — Coming Q2 2026">
+                <button className="text-sm font-bold text-tertiary flex items-center gap-1">Liquidity <span className="material-symbols-outlined text-sm">arrow_downward</span></button>
+              </ComingSoon>
+              <ComingSoon label="Sorting — Coming Q2 2026">
+                <button className="text-sm font-medium text-outline">Value</button>
+              </ComingSoon>
             </div>
             <div className="text-xs text-outline">Showing <span className="text-on-surface font-bold">14 Properties</span></div>
           </div>
@@ -84,12 +93,16 @@ export const Portfolio: React.FC = () => {
                   <p className="text-[10px] text-tertiary">+4.2% YoY</p>
                 </div>
                 <div className="md:col-span-2 flex flex-col gap-2">
-                  <button className="w-full py-2 px-3 rounded-xl bg-surface-container-highest text-primary text-[11px] font-bold hover:bg-primary hover:text-on-primary transition-all">Export</button>
-                  <button className="w-full py-2 px-3 rounded-xl border border-outline-variant/30 text-on-surface text-[11px] font-bold hover:border-tertiary/50 transition-all">Review</button>
+                  <ComingSoon label="Per-asset export — Coming Q2 2026" block>
+                    <button className="w-full py-2 px-3 rounded-xl bg-surface-container-highest text-primary text-[11px] font-bold">Export</button>
+                  </ComingSoon>
+                  <ComingSoon label="Review workflow — Coming Q2 2026" block>
+                    <button className="w-full py-2 px-3 rounded-xl border border-outline-variant/30 text-on-surface text-[11px] font-bold">Review</button>
+                  </ComingSoon>
                 </div>
               </div>
             </div>
-            
+
             <div className="group flex flex-col md:flex-row items-center gap-6 p-4 bg-surface-container-low md:rounded-full rounded-xl hover:bg-surface-container-high transition-all border border-transparent hover:border-tertiary/10">
               <div className="relative w-full md:w-48 h-32 flex-shrink-0 overflow-hidden rounded-xl">
                 <img className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 grayscale group-hover:grayscale-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBK2lkIEP74GQ6O-76Yftkrv0wtT9GCpDUUad0NZWrBKk1GsHRndZ1o713FknqyrVUdMiMmnShnJvgh8RRUQS1yc_72GtjNo_kgWhiCBBIaPN7chzpVs2_4tcC9j0uU3AFgc-er2undGa9INpM9MiChAhA5zQFcvALn-zy5A1FWCP-sNT3n96VRwtby6AZwfrzdV5Ah1QaUIIGgiI8hOKke6C0R3KuIjkYeltP3CfHXumK2SCSJAyJX7fbFbwsZlqO1ORvOogIo4e5T"/>
@@ -116,8 +129,12 @@ export const Portfolio: React.FC = () => {
                   <p className="text-[10px] text-error">-12.4% YoY</p>
                 </div>
                 <div className="md:col-span-2 flex flex-col gap-2">
-                  <button className="w-full py-2 px-3 rounded-xl bg-surface-container-highest text-primary text-[11px] font-bold hover:bg-primary hover:text-on-primary transition-all">Export</button>
-                  <button className="w-full py-2 px-3 rounded-xl bg-error/20 text-error text-[11px] font-bold hover:bg-error hover:text-on-error transition-all">Resolve Alert</button>
+                  <ComingSoon label="Per-asset export — Coming Q2 2026" block>
+                    <button className="w-full py-2 px-3 rounded-xl bg-surface-container-highest text-primary text-[11px] font-bold">Export</button>
+                  </ComingSoon>
+                  <ComingSoon label="Alert resolution — Coming Q2 2026" block>
+                    <button className="w-full py-2 px-3 rounded-xl bg-error/20 text-error text-[11px] font-bold">Resolve Alert</button>
+                  </ComingSoon>
                 </div>
               </div>
             </div>

@@ -1,19 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card } from '../components/Card';
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
 import { Layout } from '../components/Layout';
+import { ComingSoon } from '../components/ComingSoon';
+import { useProperties, type Property, type RiskStatus } from '../hooks/useProperties';
 
 interface AnalysisResult {
   liquidityScore: number;
-  riskStatus: string;
+  riskStatus: RiskStatus;
   timeToLiquidity: number;
   confidence: number;
-  assessments: { title: string; detail: string; sentiment: string; icon: string }[];
+  assessments: { title: string; detail: string; sentiment: 'positive' | 'neutral' | 'negative'; icon: string }[];
   summary: string;
 }
 
+const fmtMoney = (n: number) => {
+  if (n >= 1e9) return `$${(n / 1e9).toFixed(2)}B`;
+  if (n >= 1e6) return `$${(n / 1e6).toFixed(1)}M`;
+  if (n >= 1e3) return `$${(n / 1e3).toFixed(1)}K`;
+  return `$${n.toFixed(0)}`;
+};
+
+const riskBadge = (status: RiskStatus) => {
+  if (status === 'LOW_RISK') return { label: 'Low Risk', cls: 'bg-tertiary/10 text-tertiary-fixed border-tertiary/20' };
+  if (status === 'MEDIUM_RISK') return { label: 'Medium Risk', cls: 'bg-secondary/10 text-secondary border-secondary/20' };
+  return { label: 'High Risk', cls: 'bg-error/10 text-error border-error/20' };
+};
+
+const scoreColor = (score: number) => score >= 80 ? 'text-tertiary' : score >= 60 ? 'text-primary' : score >= 40 ? 'text-secondary' : 'text-error';
+
 export const Dashboard: React.FC = () => {
+  const navigate = useNavigate();
+  const { properties, addProperty } = useProperties();
+
   const [country, setCountry] = useState('United Kingdom');
   const [state, setState] = useState('Greater London');
   const [city, setCity] = useState('');
@@ -21,6 +42,8 @@ export const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [error, setError] = useState('');
+  const [savedToast, setSavedToast] = useState<string | null>(null);
+  const [exportingId, setExportingId] = useState<string | null>(null);
 
   const runAnalysis = async () => {
     if (!city) { setError('Please enter a city'); return; }
@@ -35,7 +58,24 @@ export const Dashboard: React.FC = () => {
       });
       const data = await res.json();
       if (data.success) {
-        setResult(data.data);
+        const analysis: AnalysisResult = data.data;
+        setResult(analysis);
+        const saved = addProperty({
+          address,
+          city,
+          state,
+          country,
+          propertyType: 'Commercial',
+          marketValue: 50000000,
+          liquidityScore: analysis.liquidityScore,
+          riskStatus: analysis.riskStatus,
+          timeToLiquidity: analysis.timeToLiquidity,
+          confidence: analysis.confidence,
+          assessments: analysis.assessments,
+          summary: analysis.summary,
+        });
+        setSavedToast(saved.name);
+        window.setTimeout(() => setSavedToast(null), 4000);
       } else {
         setError(data.error?.message || 'Analysis failed');
       }
@@ -46,34 +86,86 @@ export const Dashboard: React.FC = () => {
     }
   };
 
-  const riskColor = (status: string) => status === 'LOW_RISK' ? 'text-tertiary' : status === 'MEDIUM_RISK' ? 'text-secondary' : 'text-error';
-  const riskBg = (status: string) => status === 'LOW_RISK' ? 'bg-tertiary/10 border-tertiary/20' : status === 'MEDIUM_RISK' ? 'bg-secondary/10 border-secondary/20' : 'bg-error/10 border-error/20';
+  const aggregates = useMemo(() => {
+    if (properties.length === 0) return { avgScore: 0, totalValue: 0, avgDays: 0, activeCount: 0 };
+    const totalValue = properties.reduce((s, p) => s + p.marketValue, 0);
+    const avgScore = properties.reduce((s, p) => s + p.liquidityScore, 0) / properties.length;
+    const avgDays = Math.round(properties.reduce((s, p) => s + p.timeToLiquidity, 0) / properties.length);
+    const activeCount = properties.filter(p => p.liquidityScore >= 70).length;
+    return { avgScore, totalValue, avgDays, activeCount };
+  }, [properties]);
+
+  const recent = useMemo(() =>
+    [...properties]
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      .slice(0, 5),
+  [properties]);
+
+  const exportProperty = async (property: Property, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (exportingId) return;
+    setExportingId(property.id);
+    try {
+      const res = await fetch('/api/export', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          propertyName: property.name,
+          address: property.address,
+          city: property.city,
+          state: property.state,
+          country: property.country,
+          marketValue: property.marketValue,
+          liquidityScore: property.liquidityScore,
+          capRate: 5.8,
+          occupancyRate: 96,
+          timeToLiquidity: property.timeToLiquidity,
+          assessments: property.assessments,
+        }),
+      });
+      if (!res.ok) throw new Error('Export request failed');
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `appraisiq-${property.name.replace(/\s+/g, '-').toLowerCase()}.html`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error(err);
+      setError('Export failed. Check your connection.');
+    } finally {
+      setExportingId(null);
+    }
+  };
 
   return (
     <Layout>
       <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card level="gradient" className="relative group">
           <div className="absolute -right-4 -top-4 w-24 h-24 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-all"></div>
-          <p className="text-outline text-xs font-bold uppercase tracking-widest mb-2">Liquidity Score</p>
+          <p className="text-outline text-xs font-bold uppercase tracking-widest mb-2">Avg. Liquidity Score</p>
           <div className="flex items-baseline gap-2">
-            <h2 className="text-5xl font-black font-headline text-primary">{result ? Math.round(result.liquidityScore) : 78}</h2>
+            <h2 className="text-5xl font-black font-headline text-primary">{Math.round(aggregates.avgScore)}</h2>
             <span className="text-outline text-lg font-bold">/100</span>
           </div>
           <div className="mt-4 flex items-center gap-2 text-tertiary">
             <span className="material-symbols-outlined text-sm">trending_up</span>
-            <span className="text-xs font-bold">{result ? `${result.confidence}% confidence` : '+2.4% from last month'}</span>
+            <span className="text-xs font-bold">{properties.length} assets in portfolio</span>
           </div>
         </Card>
-        
+
         <Card level="gradient" className="relative group">
           <div className="absolute -right-4 -top-4 w-24 h-24 bg-tertiary/5 rounded-full blur-2xl group-hover:bg-tertiary/10 transition-all"></div>
           <p className="text-outline text-xs font-bold uppercase tracking-widest mb-2">Portfolio Value</p>
           <div className="flex items-baseline gap-2">
-            <h2 className="text-5xl font-black font-headline text-on-surface">£412.8M</h2>
+            <h2 className="text-5xl font-black font-headline text-on-surface">{fmtMoney(aggregates.totalValue)}</h2>
           </div>
           <div className="mt-4 flex items-center gap-2 text-outline">
             <span className="material-symbols-outlined text-sm">account_balance_wallet</span>
-            <span className="text-xs font-bold">14 Active High-Value Assets</span>
+            <span className="text-xs font-bold">{aggregates.activeCount} High-Liquidity Assets</span>
           </div>
         </Card>
 
@@ -81,15 +173,22 @@ export const Dashboard: React.FC = () => {
           <div className="absolute -right-4 -top-4 w-24 h-24 bg-secondary/5 rounded-full blur-2xl group-hover:bg-secondary/10 transition-all"></div>
           <p className="text-outline text-xs font-bold uppercase tracking-widest mb-2">Avg. Time-to-Sell</p>
           <div className="flex items-baseline gap-2">
-            <h2 className="text-5xl font-black font-headline text-secondary">{result ? result.timeToLiquidity : 42}</h2>
+            <h2 className="text-5xl font-black font-headline text-secondary">{aggregates.avgDays}</h2>
             <span className="text-outline text-lg font-bold">Days</span>
           </div>
-          <div className="mt-4 flex items-center gap-2 text-error">
+          <div className="mt-4 flex items-center gap-2 text-outline">
             <span className="material-symbols-outlined text-sm">schedule</span>
-            <span className="text-xs font-bold">{result ? result.riskStatus.replace(/_/g, ' ') : '+5 days increase (Market Shift)'}</span>
+            <span className="text-xs font-bold">Across all monitored assets</span>
           </div>
         </Card>
       </section>
+
+      {savedToast && (
+        <div className="bg-tertiary/10 border border-tertiary/30 text-tertiary px-4 py-3 rounded-xl flex items-center gap-3 animate-pulse">
+          <span className="material-symbols-outlined">check_circle</span>
+          <p className="text-sm font-bold">Saved <span className="text-tertiary-fixed">{savedToast}</span> to your portfolio. <button onClick={() => navigate('/portfolio')} className="underline ml-2">View portfolio →</button></p>
+        </div>
+      )}
 
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
         <Card className="lg:col-span-5 space-y-6">
@@ -128,9 +227,11 @@ export const Dashboard: React.FC = () => {
                 <div className="flex-1 bg-surface-container-highest/50 border border-outline-variant/10 rounded-lg focus-within:ring-2 ring-surface-tint/20 flex items-center">
                   <input className="bg-transparent border-none text-sm text-on-surface px-3 py-3 w-full outline-none" placeholder="221B Baker St" type="text" value={address} onChange={e => setAddress(e.target.value)} />
                 </div>
-                <button className="bg-surface-container-lowest text-tertiary px-4 rounded-lg flex items-center justify-center hover:bg-surface-container-highest transition-all border border-outline-variant/10">
-                  <span className="material-symbols-outlined">location_on</span>
-                </button>
+                <ComingSoon label="Geo-pin picker — Coming Q2 2026">
+                  <button className="bg-surface-container-lowest text-tertiary px-4 py-3 rounded-lg flex items-center justify-center border border-outline-variant/10">
+                    <span className="material-symbols-outlined">location_on</span>
+                  </button>
+                </ComingSoon>
               </div>
             </div>
           </div>
@@ -138,7 +239,7 @@ export const Dashboard: React.FC = () => {
           <Button
             variant="ghost"
             className="w-full border border-tertiary/20 text-tertiary font-bold hover:bg-tertiary/10"
-            icon={<span className="material-symbols-outlined">{loading ? 'progress_activity' : 'auto_awesome'}</span>}
+            icon={<span className={`material-symbols-outlined ${loading ? 'animate-spin' : ''}`}>{loading ? 'progress_activity' : 'auto_awesome'}</span>}
             onClick={runAnalysis}
             disabled={loading}
           >
@@ -150,13 +251,13 @@ export const Dashboard: React.FC = () => {
           <Card className="lg:col-span-7 space-y-6">
             <div className="flex items-center justify-between">
               <h3 className="font-headline text-xl font-bold">AI Analysis Result</h3>
-              <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase border ${riskBg(result.riskStatus)} ${riskColor(result.riskStatus)}`}>
-                {result.riskStatus.replace(/_/g, ' ')}
+              <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase border ${riskBadge(result.riskStatus).cls}`}>
+                {riskBadge(result.riskStatus).label}
               </span>
             </div>
             <div className="grid grid-cols-3 gap-4">
               <div className="text-center">
-                <p className="text-3xl font-black text-primary">{Math.round(result.liquidityScore)}</p>
+                <p className={`text-3xl font-black ${scoreColor(result.liquidityScore)}`}>{Math.round(result.liquidityScore)}</p>
                 <p className="text-[10px] uppercase font-bold text-outline tracking-widest">Score</p>
               </div>
               <div className="text-center">
@@ -195,9 +296,11 @@ export const Dashboard: React.FC = () => {
                   <p className="text-sm font-semibold text-on-surface">51.5237° N, 0.1585° W</p>
                 </div>
               </div>
-              <button className="text-xs font-bold text-tertiary bg-tertiary/10 px-4 py-2 rounded-full hover:bg-tertiary/20 border border-tertiary/20 transition-all">
-                Manual Adjust
-              </button>
+              <ComingSoon label="Manual pin adjust — Coming Q2 2026">
+                <button className="text-xs font-bold text-tertiary bg-tertiary/10 px-4 py-2 rounded-full border border-tertiary/20">
+                  Manual Adjust
+                </button>
+              </ComingSoon>
             </div>
           </Card>
         )}
@@ -205,42 +308,65 @@ export const Dashboard: React.FC = () => {
 
       <Card className="!p-0 border border-outline-variant/10">
         <div className="p-6 flex justify-between items-center border-b border-outline-variant/10">
-          <h3 className="font-headline text-xl font-bold">Recent Score Requests</h3>
-          <button className="text-primary text-xs font-bold uppercase tracking-widest flex items-center gap-2 hover:opacity-80">
-            Export Report <span className="material-symbols-outlined text-sm">download</span>
-          </button>
+          <div>
+            <h3 className="font-headline text-xl font-bold">Recent Score Requests</h3>
+            <p className="text-xs text-outline mt-1">Click a row to open detail • last {recent.length} of {properties.length}</p>
+          </div>
+          <ComingSoon label="Bulk export — Coming Q2 2026">
+            <button className="text-primary text-xs font-bold uppercase tracking-widest flex items-center gap-2">
+              Export Report <span className="material-symbols-outlined text-sm">download</span>
+            </button>
+          </ComingSoon>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-surface-container-lowest/30">
-                <th className="px-6 py-4 text-[10px] uppercase font-black text-outline tracking-widest">Property Address</th>
-                <th className="px-6 py-4 text-[10px] uppercase font-black text-outline tracking-widest">SME Name</th>
+                <th className="px-6 py-4 text-[10px] uppercase font-black text-outline tracking-widest">Property</th>
+                <th className="px-6 py-4 text-[10px] uppercase font-black text-outline tracking-widest">Location</th>
                 <th className="px-6 py-4 text-[10px] uppercase font-black text-outline tracking-widest">Risk Status</th>
                 <th className="px-6 py-4 text-[10px] uppercase font-black text-outline tracking-widest">Score</th>
-                <th className="px-6 py-4 text-[10px] uppercase font-black text-outline tracking-widest">Actions</th>
+                <th className="px-6 py-4 text-[10px] uppercase font-black text-outline tracking-widest text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-outline-variant/5">
-              <tr className="hover:bg-white/[0.03] transition-colors group">
-                <td className="px-6 py-5">
-                  <p className="text-sm font-semibold text-on-surface">88 Canary Wharf Tower</p>
-                  <p className="text-xs text-outline">London, E14 5AA</p>
-                </td>
-                <td className="px-6 py-5"><p className="text-sm font-medium">Lumina Tech Solutions</p></td>
-                <td className="px-6 py-5"><span className="px-3 py-1 rounded-full text-[10px] font-bold bg-tertiary/10 text-tertiary-fixed uppercase border border-tertiary/20">Low Risk</span></td>
-                <td className="px-6 py-5"><p className="text-lg font-bold text-primary">92</p></td>
-                <td className="px-6 py-5"><button className="text-outline hover:text-primary"><span className="material-symbols-outlined">more_vert</span></button></td>
-              </tr>
+              {recent.length === 0 ? (
+                <tr><td colSpan={5} className="px-6 py-10 text-center text-outline text-sm">No score requests yet. Run your first analysis above.</td></tr>
+              ) : recent.map(p => {
+                const badge = riskBadge(p.riskStatus);
+                return (
+                  <tr
+                    key={p.id}
+                    onClick={() => navigate(`/portfolio/${p.id}`)}
+                    className="hover:bg-white/[0.03] transition-colors group cursor-pointer"
+                  >
+                    <td className="px-6 py-5">
+                      <p className="text-sm font-semibold text-on-surface group-hover:text-primary transition-colors">{p.name}</p>
+                      <p className="text-xs text-outline">{fmtMoney(p.marketValue)} • {p.propertyType}</p>
+                    </td>
+                    <td className="px-6 py-5"><p className="text-sm font-medium text-outline">{p.city}{p.state ? `, ${p.state}` : ''}</p></td>
+                    <td className="px-6 py-5"><span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase border ${badge.cls}`}>{badge.label}</span></td>
+                    <td className="px-6 py-5"><p className={`text-lg font-bold ${scoreColor(p.liquidityScore)}`}>{Math.round(p.liquidityScore)}</p></td>
+                    <td className="px-6 py-5 text-right">
+                      <button
+                        onClick={(e) => exportProperty(p, e)}
+                        disabled={exportingId === p.id}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold text-tertiary bg-tertiary/10 hover:bg-tertiary/20 border border-tertiary/20 transition-all disabled:opacity-50"
+                      >
+                        <span className={`material-symbols-outlined text-sm ${exportingId === p.id ? 'animate-spin' : ''}`}>
+                          {exportingId === p.id ? 'progress_activity' : 'download'}
+                        </span>
+                        {exportingId === p.id ? 'Exporting…' : 'Export'}
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
       </Card>
 
-      <button className="fixed bottom-10 right-10 w-16 h-16 rounded-full liquid-gradient text-on-primary shadow-2xl shadow-primary/40 flex items-center justify-center group hover:scale-110 active:scale-95 transition-all z-50">
-        <span className="material-symbols-outlined text-3xl font-bold">add_location_alt</span>
-        <span className="absolute right-20 bg-surface-container-highest px-4 py-2 rounded-lg text-xs font-bold text-on-surface opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none border border-outline-variant/10">New Asset Scan</span>
-      </button>
     </Layout>
   );
 };

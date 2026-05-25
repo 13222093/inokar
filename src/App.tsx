@@ -13,7 +13,6 @@ export const App: React.FC = () => {
         <Route path="/portfolio" element={<Portfolio />} />
         <Route path="/portfolio/:id" element={<PropertyDetail />} />
         <Route path="/analytics" element={<RiskAnalytics />} />
-        <Route path="/settings" element={<Dashboard />} />
       </Routes>
     </BrowserRouter>
   );

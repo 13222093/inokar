@@ -2,6 +2,7 @@ import React from 'react';
 import { Layout } from '../components/Layout';
 import { Card } from '../components/Card';
 import { Button } from '../components/Button';
+import { ComingSoon } from '../components/ComingSoon';
 
 export const PropertyDetail: React.FC = () => {
   return (
@@ -19,8 +20,12 @@ export const PropertyDetail: React.FC = () => {
           </p>
         </div>
         <div className="flex gap-4">
-          <Button variant="secondary" icon={<span className="material-symbols-outlined">download</span>}>Export Report</Button>
-          <Button icon={<span className="material-symbols-outlined">edit</span>}>Update Appraisal</Button>
+          <ComingSoon label="Per-asset export — Coming Q2 2026">
+            <Button variant="secondary" icon={<span className="material-symbols-outlined">download</span>}>Export Report</Button>
+          </ComingSoon>
+          <ComingSoon label="Re-appraisal flow — Coming Q2 2026">
+            <Button icon={<span className="material-symbols-outlined">edit</span>}>Update Appraisal</Button>
+          </ComingSoon>
         </div>
       </div>
 
@@ -83,7 +88,9 @@ export const PropertyDetail: React.FC = () => {
                 <p className="text-white font-bold font-headline text-xl">Property Visual</p>
                 <p className="text-white/70 text-sm font-manrope">Class A Commercial Office</p>
              </div>
-             <Button variant="tertiary" className="text-xs py-2 px-4"><span className="material-symbols-outlined text-[16px]">visibility</span> View Gallery</Button>
+             <ComingSoon label="Gallery — Coming Q2 2026">
+               <Button variant="tertiary" className="text-xs py-2 px-4"><span className="material-symbols-outlined text-[16px]">visibility</span> View Gallery</Button>
+             </ComingSoon>
           </div>
         </Card>
         

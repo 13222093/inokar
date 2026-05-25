@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { ComingSoon } from './ComingSoon';
 
 export const TopBar: React.FC = () => {
   return (
@@ -9,21 +10,26 @@ export const TopBar: React.FC = () => {
           <NavLink to="/" className={({ isActive }) => `font-headline text-sm tracking-wide transition-colors duration-300 ${isActive ? "text-primary border-b-2 border-primary pb-1" : "text-outline hover:text-tertiary"}`}>Dashboard</NavLink>
           <NavLink to="/portfolio" className={({ isActive }) => `font-headline text-sm tracking-wide transition-colors duration-300 ${isActive ? "text-primary border-b-2 border-primary pb-1" : "text-outline hover:text-tertiary"}`}>Portfolio</NavLink>
           <NavLink to="/analytics" className={({ isActive }) => `font-headline text-sm tracking-wide transition-colors duration-300 ${isActive ? "text-primary border-b-2 border-primary pb-1" : "text-outline hover:text-tertiary"}`}>Analytics</NavLink>
-          <NavLink to="/settings" className={({ isActive }) => `font-headline text-sm tracking-wide transition-colors duration-300 ${isActive ? "text-primary border-b-2 border-primary pb-1" : "text-outline hover:text-tertiary"}`}>Settings</NavLink>
         </div>
       </div>
-      
+
       <div className="flex items-center gap-4">
-        <div className="bg-surface-container-high rounded-full px-4 py-2 flex items-center gap-3 focus-within:ring-2 ring-surface-tint/20 transition-all">
-          <span className="material-symbols-outlined text-outline">search</span>
-          <input className="bg-transparent border-none focus:ring-0 text-sm text-on-surface w-48 outline-none" placeholder="Search assets..." type="text"/>
-        </div>
-        <button className="text-outline hover:text-primary transition-colors">
-          <span className="material-symbols-outlined">notifications</span>
-        </button>
-        <button className="text-outline hover:text-primary transition-colors">
-          <span className="material-symbols-outlined">account_circle</span>
-        </button>
+        <ComingSoon label="Global search — Coming Q2 2026">
+          <div className="bg-surface-container-high rounded-full px-4 py-2 flex items-center gap-3 transition-all">
+            <span className="material-symbols-outlined text-outline">search</span>
+            <input className="bg-transparent border-none text-sm text-on-surface w-48 outline-none" placeholder="Search assets..." type="text" readOnly />
+          </div>
+        </ComingSoon>
+        <ComingSoon label="Notifications — Coming Q2 2026">
+          <button className="text-outline transition-colors">
+            <span className="material-symbols-outlined">notifications</span>
+          </button>
+        </ComingSoon>
+        <ComingSoon label="Account — Coming Q2 2026">
+          <button className="text-outline transition-colors">
+            <span className="material-symbols-outlined">account_circle</span>
+          </button>
+        </ComingSoon>
       </div>
     </header>
   );
