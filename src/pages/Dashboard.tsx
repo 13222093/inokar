@@ -2,9 +2,9 @@ import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '../components/Card';
 import { Button } from '../components/Button';
-import { Input } from '../components/Input';
 import { Layout } from '../components/Layout';
 import { ComingSoon } from '../components/ComingSoon';
+import { LocationSearch, type GeocodedLocation } from '../components/LocationSearch';
 import { useProperties, type Property, type RiskStatus } from '../hooks/useProperties';
 import { useToast } from '../hooks/useToast';
 
@@ -74,17 +74,14 @@ export const Dashboard: React.FC = () => {
   const { properties, addProperty } = useProperties();
   const { success, error: toastError } = useToast();
 
-  const [country, setCountry] = useState('United Kingdom');
-  const [state, setState] = useState('Greater London');
-  const [city, setCity] = useState('');
-  const [address, setAddress] = useState('');
+  const [location, setLocation] = useState<GeocodedLocation | null>(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [error, setError] = useState('');
   const [exportingId, setExportingId] = useState<string | null>(null);
 
   const runAnalysis = async () => {
-    if (!city) { setError('Please enter a city'); return; }
+    if (!location) { setError('Please search and select a property location'); return; }
     setLoading(true);
     setError('');
     setResult(null);
@@ -92,17 +89,24 @@ export const Dashboard: React.FC = () => {
       const res = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ country, state, city, address, propertyType: 'Commercial', marketValue: 50000000 }),
+        body: JSON.stringify({
+          country: location.country,
+          state: location.state,
+          city: location.city,
+          address: location.address,
+          propertyType: 'Commercial',
+          marketValue: 50000000,
+        }),
       });
       const data = await res.json();
       if (data.success) {
         const analysis: AnalysisResult = data.data;
         setResult(analysis);
         const saved = addProperty({
-          address,
-          city,
-          state,
-          country,
+          address: location.address,
+          city: location.city,
+          state: location.state,
+          country: location.country,
           propertyType: 'Commercial',
           marketValue: 50000000,
           liquidityScore: analysis.liquidityScore,
@@ -113,7 +117,7 @@ export const Dashboard: React.FC = () => {
           summary: analysis.summary,
         });
         success(`Saved "${saved.name}" to portfolio`, {
-          action: { label: 'View in portfolio →', onClick: () => navigate(`/portfolio/${saved.id}`) },
+          action: { label: 'View detail →', onClick: () => navigate(`/portfolio/${saved.id}`) },
         });
       } else {
         const msg = data.error?.message || 'Analysis failed';
@@ -227,59 +231,27 @@ export const Dashboard: React.FC = () => {
       </section>
 
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-        <Card className="lg:col-span-5 space-y-6">
-          <div>
+        <Card className="lg:col-span-5 flex flex-col">
+          <div className="mb-6">
             <h2 className="font-headline text-4xl font-extrabold text-on-surface mb-4 leading-tight">Instant Asset <span className="bg-gradient-to-r from-primary to-primary-container bg-clip-text text-transparent">Liquidity Mapping.</span></h2>
-            <p className="text-outline text-sm">Define property location for AI-driven liquidity analysis.</p>
+            <p className="text-outline text-sm">Search for any property worldwide — we'll geocode the precise location, then AI-analyze its liquidity profile.</p>
           </div>
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-1.5">
-                <label className="text-[10px] uppercase font-black text-outline tracking-wider ml-1">Country</label>
-                <select value={country} onChange={e => setCountry(e.target.value)} className="w-full bg-surface-container-highest/50 border border-outline-variant/10 rounded-lg text-sm text-on-surface py-3 px-3 outline-none focus:ring-2 ring-surface-tint/20">
-                  <option>United Kingdom</option>
-                  <option>United States</option>
-                  <option>Germany</option>
-                  <option>Singapore</option>
-                  <option>Australia</option>
-                  <option>Japan</option>
-                </select>
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-[10px] uppercase font-black text-outline tracking-wider ml-1">Province / State</label>
-                <select value={state} onChange={e => setState(e.target.value)} className="w-full bg-surface-container-highest/50 border border-outline-variant/10 rounded-lg text-sm text-on-surface py-3 px-3 outline-none focus:ring-2 ring-surface-tint/20">
-                  <option>Greater London</option>
-                  <option>New York</option>
-                  <option>Bavaria</option>
-                  <option>California</option>
-                  <option>Texas</option>
-                </select>
-              </div>
-            </div>
-            <Input label="City" placeholder="e.g. London" value={city} onChange={e => setCity(e.target.value)} />
-            <div className="space-y-1.5">
-              <label className="text-[10px] uppercase font-black text-outline tracking-wider ml-1">Street / Specific Address</label>
-              <div className="flex gap-2">
-                <div className="flex-1 bg-surface-container-highest/50 border border-outline-variant/10 rounded-lg focus-within:ring-2 ring-surface-tint/20 flex items-center">
-                  <input className="bg-transparent border-none text-sm text-on-surface px-3 py-3 w-full outline-none" placeholder="221B Baker St" type="text" value={address} onChange={e => setAddress(e.target.value)} />
-                </div>
-                <ComingSoon label="Geo-pin picker — Coming Q2 2026">
-                  <button className="bg-surface-container-lowest text-tertiary px-4 py-3 rounded-lg flex items-center justify-center border border-outline-variant/10">
-                    <span className="material-symbols-outlined">location_on</span>
-                  </button>
-                </ComingSoon>
-              </div>
+          <div className="flex-1">
+            <LocationSearch value={location} onSelect={setLocation} />
+            <div className="mt-4 flex items-start gap-2 text-[11px] text-outline">
+              <span className="material-symbols-outlined text-xs mt-0.5">tips_and_updates</span>
+              <p>Try <button type="button" className="underline text-primary hover:text-tertiary" onClick={() => { /* visual hint only */ }}>"Sudirman Jakarta"</button>, <span className="text-on-surface">"Marina Bay Singapore"</span>, or <span className="text-on-surface">"221B Baker St London"</span>.</p>
             </div>
           </div>
-          {error && <p className="text-error text-xs font-bold">{error}</p>}
+          {error && <p className="text-error text-xs font-bold mt-4">{error}</p>}
           <Button
             variant="ghost"
-            className="w-full border border-tertiary/20 text-tertiary font-bold hover:bg-tertiary/10"
+            className="w-full border border-tertiary/20 text-tertiary font-bold hover:bg-tertiary/10 mt-6 disabled:border-outline-variant/10 disabled:text-outline"
             icon={<span className={`material-symbols-outlined ${loading ? 'animate-spin' : ''}`}>{loading ? 'progress_activity' : 'auto_awesome'}</span>}
             onClick={runAnalysis}
-            disabled={loading}
+            disabled={loading || !location}
           >
-            {loading ? 'Analyzing...' : 'Run Predictive Analysis'}
+            {loading ? 'Analyzing...' : location ? 'Run Predictive Analysis' : 'Select a location first'}
           </Button>
         </Card>
 
@@ -321,21 +293,42 @@ export const Dashboard: React.FC = () => {
             </div>
           </Card>
         ) : (
-          <Card className="lg:col-span-7 !p-0 relative min-h-[400px]">
-            <img alt="Map" className="absolute inset-0 w-full h-full object-cover grayscale opacity-60" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0H88nQv3cvO-j7GpmzSAUhfvzUZZyPNhoYMU49f8am6VjNTiGe6XVV2gZqhmQXA1UuQyilXYMBaASJvn0GoLUeHxyJesZ43Q9UidVZpkMxeb2SCPvd5MvPlxrd-cuiGakoxktSzRAg2D1Z7RrssIRrIMKrSGc1FmBu2iAJKlaGTTxNrAP6YOUCFgZ_WcQUaRlNJRH7jCKL6zRTzIv2tbSwZLWaCaB4pQ139MRcggMugkgv6ajKr0mYPnlq4dVqgF1sbdUCHWxTnwk"/>
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent pointer-events-none"></div>
-            <div className="absolute bottom-6 left-6 right-6 glass-effect p-4 rounded-xl flex items-center justify-between border border-white/10">
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-tertiary/20 flex items-center justify-center text-tertiary">
-                  <span className="material-symbols-outlined">gps_fixed</span>
+          <Card className="lg:col-span-7 !p-0 relative min-h-[400px] overflow-hidden">
+            {location ? (
+              <iframe
+                title={`Map preview of ${location.displayName}`}
+                className="absolute inset-0 w-full h-full"
+                src={`https://www.openstreetmap.org/export/embed.html?bbox=${location.lng - 0.01}%2C${location.lat - 0.005}%2C${location.lng + 0.01}%2C${location.lat + 0.005}&layer=mapnik&marker=${location.lat}%2C${location.lng}`}
+                loading="lazy"
+              />
+            ) : (
+              <>
+                <img alt="Map" className="absolute inset-0 w-full h-full object-cover grayscale opacity-60" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0H88nQv3cvO-j7GpmzSAUhfvzUZZyPNhoYMU49f8am6VjNTiGe6XVV2gZqhmQXA1UuQyilXYMBaASJvn0GoLUeHxyJesZ43Q9UidVZpkMxeb2SCPvd5MvPlxrd-cuiGakoxktSzRAg2D1Z7RrssIRrIMKrSGc1FmBu2iAJKlaGTTxNrAP6YOUCFgZ_WcQUaRlNJRH7jCKL6zRTzIv2tbSwZLWaCaB4pQ139MRcggMugkgv6ajKr0mYPnlq4dVqgF1sbdUCHWxTnwk"/>
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent pointer-events-none flex items-center justify-center">
+                  <div className="bg-surface-container-highest/80 backdrop-blur-sm border border-outline-variant/20 rounded-xl px-6 py-4 text-center">
+                    <span className="material-symbols-outlined text-tertiary mb-2 block">search</span>
+                    <p className="text-sm font-bold text-on-surface">Search a location to begin</p>
+                    <p className="text-xs text-outline mt-1">Map preview will appear here</p>
+                  </div>
                 </div>
-                <div>
+              </>
+            )}
+            <div className="absolute bottom-6 left-6 right-6 glass-effect p-4 rounded-xl flex items-center justify-between border border-white/10 backdrop-blur-md bg-background/40">
+              <div className="flex items-center gap-4 min-w-0">
+                <div className={`w-10 h-10 rounded-full ${location ? 'bg-tertiary/20 text-tertiary' : 'bg-outline-variant/10 text-outline'} flex items-center justify-center flex-shrink-0`}>
+                  <span className="material-symbols-outlined">{location ? 'gps_fixed' : 'gps_off'}</span>
+                </div>
+                <div className="min-w-0">
                   <p className="text-xs text-outline font-bold uppercase tracking-widest">Pin Precision</p>
-                  <p className="text-sm font-semibold text-on-surface">51.5237° N, 0.1585° W</p>
+                  <p className="text-sm font-semibold text-on-surface truncate">
+                    {location
+                      ? `${location.lat.toFixed(4)}° ${location.lat >= 0 ? 'N' : 'S'}, ${Math.abs(location.lng).toFixed(4)}° ${location.lng >= 0 ? 'E' : 'W'}`
+                      : 'Awaiting location selection'}
+                  </p>
                 </div>
               </div>
               <ComingSoon label="Manual pin adjust — Coming Q2 2026">
-                <button className="text-xs font-bold text-tertiary bg-tertiary/10 px-4 py-2 rounded-full border border-tertiary/20">
+                <button className="text-xs font-bold text-tertiary bg-tertiary/10 px-4 py-2 rounded-full border border-tertiary/20 whitespace-nowrap">
                   Manual Adjust
                 </button>
               </ComingSoon>
