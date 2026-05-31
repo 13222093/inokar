@@ -1,10 +1,9 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '../components/Card';
-import { Button } from '../components/Button';
 import { Layout } from '../components/Layout';
 import { ComingSoon } from '../components/ComingSoon';
-import { LocationSearch, type GeocodedLocation } from '../components/LocationSearch';
+import { LocationSearch, type GeocodedLocation, type LocationSearchHandle } from '../components/LocationSearch';
 import { useProperties, type Property, type RiskStatus } from '../hooks/useProperties';
 import { useToast } from '../hooks/useToast';
 import { deriveReport } from '../lib/reportDerivation';
@@ -71,10 +70,18 @@ const riskBadge = (status: RiskStatus) => {
 
 const scoreColor = (score: number) => score >= 80 ? 'text-tertiary' : score >= 60 ? 'text-primary' : score >= 40 ? 'text-secondary' : 'text-error';
 
+const PRESET_LOCATIONS = [
+  { label: 'Sudirman, Jakarta', query: 'Jalan Jenderal Sudirman Jakarta' },
+  { label: 'Marina Bay, Singapore', query: 'Marina Bay Singapore' },
+  { label: 'Orchard Road, Singapore', query: 'Orchard Road Singapore' },
+  { label: '221B Baker St, London', query: '221B Baker Street London' },
+];
+
 export const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const { properties, addProperty } = useProperties();
   const { success, error: toastError } = useToast();
+  const searchRef = useRef<LocationSearchHandle>(null);
 
   const [location, setLocation] = useState<GeocodedLocation | null>(null);
   const [loading, setLoading] = useState(false);
@@ -217,23 +224,66 @@ export const Dashboard: React.FC = () => {
             <h2 className="font-headline text-4xl font-extrabold text-on-surface mb-4 leading-tight">Instant Asset <span className="bg-gradient-to-r from-primary to-primary-container bg-clip-text text-transparent">Liquidity Mapping.</span></h2>
             <p className="text-outline text-sm">Search for any property worldwide — we'll geocode the precise location, then AI-analyze its liquidity profile.</p>
           </div>
-          <div className="flex-1">
-            <LocationSearch value={location} onSelect={setLocation} />
-            <div className="mt-4 flex items-start gap-2 text-[11px] text-outline">
-              <span className="material-symbols-outlined text-xs mt-0.5">tips_and_updates</span>
-              <p>Try <button type="button" className="underline text-primary hover:text-tertiary" onClick={() => { /* visual hint only */ }}>"Sudirman Jakarta"</button>, <span className="text-on-surface">"Marina Bay Singapore"</span>, or <span className="text-on-surface">"221B Baker St London"</span>.</p>
-            </div>
+          <div className="flex-1 space-y-5">
+            <LocationSearch ref={searchRef} value={location} onSelect={setLocation} />
+
+            {!location && (
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.22em] font-black text-outline mb-2.5 flex items-center gap-1.5">
+                  <span className="material-symbols-outlined" style={{ fontSize: '13px' }}>bolt</span>
+                  Quick Start
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {PRESET_LOCATIONS.map(p => (
+                    <button
+                      key={p.query}
+                      type="button"
+                      onClick={() => searchRef.current?.searchFor(p.query)}
+                      className="group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-container-highest/40 border border-outline-variant/15 text-outline hover:text-tertiary hover:bg-tertiary/10 hover:border-tertiary/40 active:scale-95 transition-all text-xs font-semibold"
+                    >
+                      <span className="material-symbols-outlined group-hover:text-tertiary transition-colors" style={{ fontSize: '14px' }}>location_on</span>
+                      {p.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
-          {error && <p className="text-error text-xs font-bold mt-4">{error}</p>}
-          <Button
-            variant="ghost"
-            className="w-full border border-tertiary/20 text-tertiary font-bold hover:bg-tertiary/10 mt-6 disabled:border-outline-variant/10 disabled:text-outline"
-            icon={<span className={`material-symbols-outlined ${loading ? 'animate-spin' : ''}`}>{loading ? 'progress_activity' : 'auto_awesome'}</span>}
-            onClick={runAnalysis}
-            disabled={loading || !location}
-          >
-            {loading ? 'Analyzing...' : location ? 'Run Predictive Analysis' : 'Select a location first'}
-          </Button>
+
+          {error && <p className="text-error text-xs font-bold mt-4 flex items-center gap-1.5">
+            <span className="material-symbols-outlined text-sm">error</span>{error}
+          </p>}
+
+          {/* CTA — state-aware: awaiting → ready → loading */}
+          <div className="mt-6">
+            {loading ? (
+              <button
+                disabled
+                className="w-full py-3.5 px-4 rounded-xl bg-tertiary/15 border border-tertiary/40 text-tertiary font-bold flex items-center justify-center gap-2.5 shadow-lg shadow-tertiary/10"
+              >
+                <span className="material-symbols-outlined animate-spin">progress_activity</span>
+                <span>Analyzing {location?.city || 'your property'}…</span>
+              </button>
+            ) : !location ? (
+              <button
+                disabled
+                className="w-full py-3.5 px-4 rounded-xl border-2 border-dashed border-outline-variant/25 text-outline font-bold flex items-center justify-center gap-2.5 cursor-not-allowed bg-surface-container-lowest/20"
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>arrow_upward</span>
+                <span className="text-sm">Pick a location above to begin</span>
+              </button>
+            ) : (
+              <button
+                onClick={runAnalysis}
+                className="group relative w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-tertiary/20 via-tertiary/10 to-primary/15 border border-tertiary/40 text-tertiary font-bold flex items-center justify-center gap-2.5 transition-all hover:shadow-xl hover:shadow-tertiary/20 hover:border-tertiary/60 active:scale-[0.98] overflow-hidden"
+              >
+                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-tertiary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                <span className="material-symbols-outlined relative group-hover:rotate-12 transition-transform">auto_awesome</span>
+                <span className="relative">Run Predictive Analysis</span>
+                <span className="material-symbols-outlined relative text-sm opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all">arrow_forward</span>
+              </button>
+            )}
+          </div>
         </Card>
 
         {loading ? (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, forwardRef, useImperativeHandle } from 'react';
 
 export interface GeocodedLocation {
   displayName: string;
@@ -55,12 +55,18 @@ interface Props {
   placeholder?: string;
 }
 
-export const LocationSearch: React.FC<Props> = ({
+export interface LocationSearchHandle {
+  searchFor: (query: string) => void;
+  clear: () => void;
+  focus: () => void;
+}
+
+export const LocationSearch = forwardRef<LocationSearchHandle, Props>(({
   value,
   onSelect,
   label = 'Property Location',
   placeholder = 'Search address, city, or landmark…',
-}) => {
+}, ref) => {
   const [query, setQuery] = useState(value?.displayName || '');
   const [results, setResults] = useState<GeocodedLocation[]>([]);
   const [loading, setLoading] = useState(false);
@@ -68,6 +74,7 @@ export const LocationSearch: React.FC<Props> = ({
   const [errorMsg, setErrorMsg] = useState('');
   const [activeIdx, setActiveIdx] = useState(-1);
   const containerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const debounceRef = useRef<number | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
@@ -145,6 +152,18 @@ export const LocationSearch: React.FC<Props> = ({
     setOpen(false);
   };
 
+  useImperativeHandle(ref, () => ({
+    searchFor: (q: string) => {
+      setQuery(q);
+      if (value) onSelect(null);
+      if (debounceRef.current) window.clearTimeout(debounceRef.current);
+      fetchResults(q);
+      inputRef.current?.focus();
+    },
+    clear: clearSelection,
+    focus: () => inputRef.current?.focus(),
+  }), [value, onSelect, fetchResults]);
+
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (!open || results.length === 0) return;
     if (e.key === 'ArrowDown') {
@@ -169,6 +188,7 @@ export const LocationSearch: React.FC<Props> = ({
       <div className="flex items-center bg-surface-container-highest/50 border border-outline-variant/10 rounded-lg focus-within:ring-2 focus-within:ring-surface-tint/20 transition-all">
         <span className="material-symbols-outlined text-outline pl-3">search</span>
         <input
+          ref={inputRef}
           type="text"
           value={query}
           onChange={onChange}
@@ -248,4 +268,6 @@ export const LocationSearch: React.FC<Props> = ({
       )}
     </div>
   );
-};
+});
+
+LocationSearch.displayName = 'LocationSearch';
