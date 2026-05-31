@@ -77,6 +77,7 @@ export const Dashboard: React.FC = () => {
   const [location, setLocation] = useState<GeocodedLocation | null>(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
+  const [savedId, setSavedId] = useState<string | null>(null);
   const [error, setError] = useState('');
   const [exportingId, setExportingId] = useState<string | null>(null);
 
@@ -85,6 +86,7 @@ export const Dashboard: React.FC = () => {
     setLoading(true);
     setError('');
     setResult(null);
+    setSavedId(null);
     try {
       const res = await fetch('/api/analyze', {
         method: 'POST',
@@ -116,8 +118,9 @@ export const Dashboard: React.FC = () => {
           assessments: analysis.assessments,
           summary: analysis.summary,
         });
-        success(`Saved "${saved.name}" to portfolio`, {
-          action: { label: 'View detail →', onClick: () => navigate(`/portfolio/${saved.id}`) },
+        setSavedId(saved.id);
+        success(`Saved "${saved.name}" — full analysis ready`, {
+          action: { label: 'Open full report →', onClick: () => navigate(`/portfolio/${saved.id}`) },
         });
       } else {
         const msg = data.error?.message || 'Analysis failed';
@@ -291,6 +294,18 @@ export const Dashboard: React.FC = () => {
                 </div>
               ))}
             </div>
+            {savedId && (
+              <button
+                onClick={() => navigate(`/portfolio/${savedId}`)}
+                className="w-full mt-2 py-3 px-4 rounded-xl bg-primary/10 border border-primary/30 text-primary hover:bg-primary/20 transition-all flex items-center justify-center gap-2 font-bold text-sm group"
+              >
+                Open full analysis report
+                <span className="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+              </button>
+            )}
+            <p className="text-[10px] text-outline text-center pt-1">
+              This is a preview — the full 11-section report includes score breakdown, comparables, scenarios, and risk analysis.
+            </p>
           </Card>
         ) : (
           <Card className="lg:col-span-7 !p-0 relative min-h-[400px] overflow-hidden">
