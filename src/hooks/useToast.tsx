@@ -9,13 +9,21 @@ export interface Toast {
   action?: { label: string; onClick: () => void };
 }
 
+interface ToastOpts {
+  kind?: ToastKind;
+  action?: Toast['action'];
+  duration?: number;
+}
+
+type ShortcutOpts = Omit<ToastOpts, 'kind'>;
+
 interface ToastContextValue {
   toasts: Toast[];
-  toast: (message: string, opts?: { kind?: ToastKind; action?: Toast['action']; duration?: number }) => string;
+  toast: (message: string, opts?: ToastOpts) => string;
   dismiss: (id: string) => void;
-  success: (message: string, opts?: Omit<Parameters<ToastContextValue['toast']>[1], 'kind'>) => string;
-  error: (message: string, opts?: Omit<Parameters<ToastContextValue['toast']>[1], 'kind'>) => string;
-  info: (message: string, opts?: Omit<Parameters<ToastContextValue['toast']>[1], 'kind'>) => string;
+  success: (message: string, opts?: ShortcutOpts) => string;
+  error: (message: string, opts?: ShortcutOpts) => string;
+  info: (message: string, opts?: ShortcutOpts) => string;
 }
 
 const ToastContext = createContext<ToastContextValue | null>(null);
