@@ -4,9 +4,10 @@ import { Layout } from '../components/Layout';
 import { Card } from '../components/Card';
 import { Button } from '../components/Button';
 import { ComingSoon } from '../components/ComingSoon';
-import { useProperties, type Property, type RiskStatus } from '../hooks/useProperties';
+import { useProperties, type RiskStatus } from '../hooks/useProperties';
 import { useToast } from '../hooks/useToast';
 import { deriveReport, type Verdict, type ScoreDimension, type RiskFactor } from '../lib/reportDerivation';
+import { exportPropertyAsPdf } from '../lib/exportPdf';
 
 // ─── Formatters ────────────────────────────────────────────────────
 
@@ -116,36 +117,6 @@ const RiskHeatCell: React.FC<{ rf: RiskFactor }> = ({ rf }) => {
 
 // ─── Export logic ──────────────────────────────────────────────────
 
-const exportPropertyAsHtml = async (property: Property): Promise<void> => {
-  const res = await fetch('/api/export', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      propertyName: property.name,
-      address: property.address,
-      city: property.city,
-      state: property.state,
-      country: property.country,
-      marketValue: property.marketValue,
-      liquidityScore: property.liquidityScore,
-      capRate: property.capRate ?? 5.8,
-      occupancyRate: property.occupancyRate ?? 96,
-      timeToLiquidity: property.timeToLiquidity,
-      assessments: property.assessments,
-    }),
-  });
-  if (!res.ok) throw new Error('Export request failed');
-  const blob = await res.blob();
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `appraisiq-${property.name.replace(/\s+/g, '-').toLowerCase()}.html`;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
-};
-
 // ─── Main Component ────────────────────────────────────────────────
 
 export const PropertyDetail: React.FC = () => {
@@ -181,8 +152,8 @@ export const PropertyDetail: React.FC = () => {
     if (exporting) return;
     setExporting(true);
     try {
-      await exportPropertyAsHtml(property);
-      success(`Exported ${property.name} report`);
+      await exportPropertyAsPdf(property, report);
+      success(`Exported ${property.name} report (PDF)`);
     } catch (err) {
       console.error(err);
       toastError('Export failed. Check your connection and retry.');

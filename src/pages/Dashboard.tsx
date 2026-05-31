@@ -7,6 +7,8 @@ import { ComingSoon } from '../components/ComingSoon';
 import { LocationSearch, type GeocodedLocation } from '../components/LocationSearch';
 import { useProperties, type Property, type RiskStatus } from '../hooks/useProperties';
 import { useToast } from '../hooks/useToast';
+import { deriveReport } from '../lib/reportDerivation';
+import { exportPropertyAsPdf } from '../lib/exportPdf';
 
 const ResultSkeleton: React.FC = () => (
   <Card className="lg:col-span-7 space-y-6 animate-pulse">
@@ -156,33 +158,9 @@ export const Dashboard: React.FC = () => {
     if (exportingId) return;
     setExportingId(property.id);
     try {
-      const res = await fetch('/api/export', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          propertyName: property.name,
-          address: property.address,
-          city: property.city,
-          state: property.state,
-          country: property.country,
-          marketValue: property.marketValue,
-          liquidityScore: property.liquidityScore,
-          capRate: 5.8,
-          occupancyRate: 96,
-          timeToLiquidity: property.timeToLiquidity,
-          assessments: property.assessments,
-        }),
-      });
-      if (!res.ok) throw new Error('Export request failed');
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `appraisiq-${property.name.replace(/\s+/g, '-').toLowerCase()}.html`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
+      const report = deriveReport(property);
+      await exportPropertyAsPdf(property, report);
+      success(`Exported ${property.name} (PDF)`);
     } catch (err) {
       console.error(err);
       toastError('Export failed. Check your connection and retry.');
